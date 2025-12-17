@@ -45,6 +45,7 @@
     "@types/node": "^20.19.27",
     "@types/proxy-addr": "^2.0.3",
     "@types/source-map-support": "^0.5.10",
+    "@types/swagger-jsdoc": "^6.0.4",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "adonis-preset-ts": "^2.1.0",

@@ -32,7 +32,7 @@ test.group('Regions', (group) => {
     client.assert.notProperty(firstRegion, 'departements')
 
     // Vérifie que les régions sont triées alphabétiquement
-    const regionNames = data.map((r) => r.name)
+    const regionNames = data.map((r: { name: string }) => r.name)
     const sortedNames = [...regionNames].sort()
     // @ts-ignore
     client.assert.deepEqual(regionNames, sortedNames)
@@ -72,7 +72,7 @@ test.group('Regions', (group) => {
       client.assert.notProperty(firstDept, 'communes')
 
       // Vérifie le tri alphabétique des départements
-      const deptNames = data.departements.map((d) => d.name)
+      const deptNames = data.departements.map((d: { name: string }) => d.name)
       const sortedDeptNames = [...deptNames].sort()
       // @ts-ignore
       client.assert.deepEqual(deptNames, sortedDeptNames)
@@ -114,13 +114,13 @@ test.group('Regions', (group) => {
       client.assert.notProperty(firstDept, 'communes')
 
       // Vérifie que tous les départements appartiennent à la région
-      data.forEach((dept) => {
+      data.forEach((dept: { region_id: number }) => {
         // @ts-ignore
         client.assert.equal(dept.region_id, 1)
       })
 
       // Vérifie le tri alphabétique
-      const deptNames = data.map((d) => d.name)
+      const deptNames = data.map((d: { name: string }) => d.name)
       const sortedNames = [...deptNames].sort()
       // @ts-ignore
       client.assert.deepEqual(deptNames, sortedNames)
@@ -179,7 +179,7 @@ test.group('Regions', (group) => {
         client.assert.property(firstCommune, 'departement_id')
 
         // Vérifie le tri alphabétique des communes
-        const communeNames = data.departement.communes.map((c) => c.name)
+        const communeNames = data.departement.communes.map((c: { name: string }) => c.name)
         const sortedNames = [...communeNames].sort()
         // @ts-ignore
         client.assert.deepEqual(communeNames, sortedNames)

@@ -7,7 +7,7 @@ const options: swaggerJsdoc.Options = {
       title: 'API Découpage Administratif du Sénégal',
       version: '1.0.0',
       description:
-        "API REST pour accéder aux données du découpage administratif du Sénégal. Cette API permet de récupérer les informations sur les 14 régions, les départements et les communes du Sénégal.",
+        'API REST pour accéder aux données du découpage administratif du Sénégal. Cette API permet de récupérer les informations sur les 14 régions, les départements et les communes du Sénégal.',
       contact: {
         name: 'Support API',
         email: 'support@example.com',

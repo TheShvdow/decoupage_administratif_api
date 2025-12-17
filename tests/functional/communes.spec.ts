@@ -34,7 +34,7 @@ test.group('Communes', (group) => {
     client.assert.notProperty(firstCommune, 'departement')
 
     // Vérifie le tri alphabétique
-    const communeNames = data.map((c) => c.name)
+    const communeNames = data.map((c: { name: string }) => c.name)
     const sortedNames = [...communeNames].sort()
     // @ts-ignore
     client.assert.deepEqual(communeNames, sortedNames)
@@ -55,20 +55,19 @@ test.group('Communes', (group) => {
     client.assert.isArray(data)
 
     // Vérifie que toutes les communes appartiennent au département 1
-    data.forEach((commune) => {
+    data.forEach((commune: { departement_id: number }) => {
       // @ts-ignore
       client.assert.equal(commune.departement_id, 1)
     })
 
     // Vérifie le tri alphabétique
     if (data.length > 0) {
-      const communeNames = data.map((c) => c.name)
+      const communeNames = data.map((c: { name: string }) => c.name)
       const sortedNames = [...communeNames].sort()
       // @ts-ignore
       client.assert.deepEqual(communeNames, sortedNames)
     }
   })
-
 
   test('GET /api/v1/communes/:id - should return commune with full hierarchy (department + region)', async ({
     client,

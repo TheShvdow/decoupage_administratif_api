@@ -38,7 +38,7 @@ test.group('Departements', (group) => {
     client.assert.notProperty(firstDept, 'region')
 
     // Vérifie le tri alphabétique
-    const deptNames = data.map((d) => d.name)
+    const deptNames = data.map((d: { name: string }) => d.name)
     const sortedNames = [...deptNames].sort()
     // @ts-ignore
     client.assert.deepEqual(deptNames, sortedNames)
@@ -59,20 +59,19 @@ test.group('Departements', (group) => {
     client.assert.isArray(data)
 
     // Vérifie que tous les départements appartiennent à la région 1
-    data.forEach((dept) => {
+    data.forEach((dept: { region_id: number }) => {
       // @ts-ignore
       client.assert.equal(dept.region_id, 1)
     })
 
     // Vérifie le tri alphabétique
     if (data.length > 0) {
-      const deptNames = data.map((d) => d.name)
+      const deptNames = data.map((d: { name: string }) => d.name)
       const sortedNames = [...deptNames].sort()
       // @ts-ignore
       client.assert.deepEqual(deptNames, sortedNames)
     }
   })
-
 
   test('GET /api/v1/departements/:id - should return department with communes', async ({
     client,
@@ -110,13 +109,13 @@ test.group('Departements', (group) => {
       client.assert.property(firstCommune, 'departement_id')
 
       // Vérifie que toutes les communes appartiennent au département
-      data.communes.forEach((commune) => {
+      data.communes.forEach((commune: { departement_id: number }) => {
         // @ts-ignore
         client.assert.equal(commune.departement_id, data.id)
       })
 
       // Vérifie le tri alphabétique des communes
-      const communeNames = data.communes.map((c) => c.name)
+      const communeNames = data.communes.map((c: { name: string }) => c.name)
       const sortedNames = [...communeNames].sort()
       // @ts-ignore
       client.assert.deepEqual(communeNames, sortedNames)
@@ -156,13 +155,13 @@ test.group('Departements', (group) => {
       client.assert.property(firstCommune, 'departement_id')
 
       // Vérifie que toutes les communes appartiennent au département
-      data.forEach((commune) => {
+      data.forEach((commune: { departement_id: number }) => {
         // @ts-ignore
         client.assert.equal(commune.departement_id, 1)
       })
 
       // Vérifie le tri alphabétique
-      const communeNames = data.map((c) => c.name)
+      const communeNames = data.map((c: { name: string }) => c.name)
       const sortedNames = [...communeNames].sort()
       // @ts-ignore
       client.assert.deepEqual(communeNames, sortedNames)
