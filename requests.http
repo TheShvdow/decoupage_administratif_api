@@ -1,0 +1,10 @@
+### Test App
+GET http://localhost:3333/
+Content-Type: application/json
+Accept: application/javascript
+
+### Get Region
+GET http://localhost:3333/api/v1/regions/3/departements/9/communes/
+Content-Type: application/json
+Accept: application/json
+
