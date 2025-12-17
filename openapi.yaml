@@ -1,0 +1,645 @@
+openapi: 3.0.0
+info:
+  title: API Découpage Administratif du Sénégal
+  version: 1.0.0
+  description: |
+    API REST pour accéder aux données du découpage administratif du Sénégal.
+
+    Cette API permet de récupérer les informations sur les **14 régions**, les **départements** et les **communes** du Sénégal.
+
+    ## Fonctionnalités
+
+    - Liste complète des régions, départements et communes
+    - Filtrage par région ou département
+    - Hiérarchie complète des données (commune → département → région)
+    - Tri alphabétique automatique
+    - Format de réponse standardisé
+
+    ## Utilisation
+
+    Toutes les réponses suivent le format:
+    ```json
+    {
+      "success": true,
+      "data": [...]
+    }
+    ```
+
+  contact:
+    name: Support API
+    email: support@example.com
+    url: https://github.com/Theshvdow/DecoupageAdministratifSenegalApi
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3333
+    description: Serveur de développement
+  - url: https://api.senegal-admin.com
+    description: Serveur de production
+
+tags:
+  - name: Régions
+    description: Gestion des régions du Sénégal (14 régions)
+  - name: Départements
+    description: Gestion des départements du Sénégal
+  - name: Communes
+    description: Gestion des communes du Sénégal
+
+paths:
+  /:
+    get:
+      summary: Page d'accueil de l'API
+      description: Retourne un message de bienvenue avec les informations de l'API
+      responses:
+        '200':
+          description: Message de bienvenue
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  welcome:
+                    type: string
+                    example: "Bienvenu dans l'api du Découpage administratif du Sénégal..."
+
+  /api/v1/regions:
+    get:
+      tags:
+        - Régions
+      summary: Liste toutes les régions
+      description: |
+        Retourne la liste complète des 14 régions du Sénégal (sans départements ni communes).
+
+        Les régions sont triées par ordre alphabétique.
+      responses:
+        '200':
+          description: Liste des régions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Region'
+              examples:
+                success:
+                  summary: Exemple de réponse réussie
+                  value:
+                    success: true
+                    data:
+                      - id: 1
+                        name: Dakar
+                        created_at: "2024-12-14T10:00:00.000Z"
+                        updated_at: "2024-12-14T10:00:00.000Z"
+                      - id: 2
+                        name: Diourbel
+                        created_at: "2024-12-14T10:00:00.000Z"
+                        updated_at: "2024-12-14T10:00:00.000Z"
+
+  /api/v1/regions/{id}:
+    get:
+      tags:
+        - Régions
+      summary: Obtenir une région avec ses départements
+      description: |
+        Retourne une région spécifique avec la liste de ses départements (sans les communes).
+
+        Les départements sont triés par ordre alphabétique.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identifiant de la région
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Région avec ses départements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/RegionWithDepartements'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/regions/{regionId}/departements:
+    get:
+      tags:
+        - Régions
+      summary: Liste des départements d'une région
+      description: |
+        Retourne tous les départements d'une région spécifique (sans les communes).
+
+        Les départements sont triés par ordre alphabétique.
+      parameters:
+        - name: regionId
+          in: path
+          required: true
+          description: Identifiant de la région
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Liste des départements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Departement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/regions/{regionId}/departements/{departementId}:
+    get:
+      tags:
+        - Régions
+      summary: Département d'une région avec ses communes
+      description: |
+        Retourne un département spécifique d'une région avec toutes ses communes.
+
+        Les communes sont triées par ordre alphabétique.
+      parameters:
+        - name: regionId
+          in: path
+          required: true
+          description: Identifiant de la région
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+        - name: departementId
+          in: path
+          required: true
+          description: Identifiant du département
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Région, département et ses communes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      region:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: Dakar
+                      departement:
+                        $ref: '#/components/schemas/DepartementWithCommunes'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/departements:
+    get:
+      tags:
+        - Départements
+      summary: Liste tous les départements
+      description: |
+        Retourne la liste de tous les départements (sans communes).
+
+        Peut être filtré par région en utilisant le paramètre `region_id`.
+
+        Les départements sont triés par ordre alphabétique.
+      parameters:
+        - name: region_id
+          in: query
+          required: false
+          description: Filtrer par identifiant de région
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Liste des départements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Departement'
+              examples:
+                all:
+                  summary: Tous les départements
+                  value:
+                    success: true
+                    data:
+                      - id: 1
+                        name: Dakar
+                        region_id: 1
+                        created_at: "2024-12-14T10:00:00.000Z"
+                        updated_at: "2024-12-14T10:00:00.000Z"
+                filtered:
+                  summary: Départements filtrés par région
+                  value:
+                    success: true
+                    data:
+                      - id: 1
+                        name: Dakar
+                        region_id: 1
+                        created_at: "2024-12-14T10:00:00.000Z"
+                        updated_at: "2024-12-14T10:00:00.000Z"
+
+  /api/v1/departements/{id}:
+    get:
+      tags:
+        - Départements
+      summary: Obtenir un département avec ses communes
+      description: |
+        Retourne un département spécifique avec la liste de toutes ses communes.
+
+        Les communes sont triées par ordre alphabétique.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identifiant du département
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Département avec ses communes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/DepartementWithCommunes'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/departements/{id}/communes:
+    get:
+      tags:
+        - Départements
+      summary: Liste des communes d'un département
+      description: |
+        Retourne toutes les communes d'un département spécifique.
+
+        Les communes sont triées par ordre alphabétique.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identifiant du département
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Liste des communes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Commune'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/communes:
+    get:
+      tags:
+        - Communes
+      summary: Liste toutes les communes
+      description: |
+        Retourne la liste de toutes les communes du Sénégal.
+
+        Peut être filtré par département en utilisant le paramètre `departement_id`.
+
+        Les communes sont triées par ordre alphabétique.
+      parameters:
+        - name: departement_id
+          in: query
+          required: false
+          description: Filtrer par identifiant de département
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Liste des communes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Commune'
+              examples:
+                all:
+                  summary: Toutes les communes
+                  value:
+                    success: true
+                    data:
+                      - id: 1
+                        name: Biscuiterie
+                        departement_id: 1
+                        created_at: "2024-12-14T10:00:00.000Z"
+                        updated_at: "2024-12-14T10:00:00.000Z"
+                filtered:
+                  summary: Communes filtrées par département
+                  value:
+                    success: true
+                    data:
+                      - id: 1
+                        name: Biscuiterie
+                        departement_id: 1
+                        created_at: "2024-12-14T10:00:00.000Z"
+                        updated_at: "2024-12-14T10:00:00.000Z"
+
+  /api/v1/communes/{id}:
+    get:
+      tags:
+        - Communes
+      summary: Obtenir une commune avec sa hiérarchie complète
+      description: |
+        Retourne une commune spécifique avec son département et sa région (hiérarchie complète pour breadcrumb).
+
+        Cette route est utile pour afficher le fil d'Ariane : Région > Département > Commune
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identifiant de la commune
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Commune avec hiérarchie complète
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/CommuneWithHierarchy'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    Region:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identifiant unique de la région
+          example: 1
+        name:
+          type: string
+          description: Nom de la région
+          example: Dakar
+        created_at:
+          type: string
+          format: date-time
+          description: Date de création
+          example: "2024-12-14T10:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Date de modification
+          example: "2024-12-14T10:00:00.000Z"
+
+    RegionWithDepartements:
+      allOf:
+        - $ref: '#/components/schemas/Region'
+        - type: object
+          properties:
+            departements:
+              type: array
+              description: Liste des départements de la région
+              items:
+                $ref: '#/components/schemas/Departement'
+
+    Departement:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identifiant unique du département
+          example: 1
+        name:
+          type: string
+          description: Nom du département
+          example: Dakar
+        region_id:
+          type: integer
+          description: Identifiant de la région parent
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          description: Date de création
+          example: "2024-12-14T10:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Date de modification
+          example: "2024-12-14T10:00:00.000Z"
+
+    DepartementWithCommunes:
+      allOf:
+        - $ref: '#/components/schemas/Departement'
+        - type: object
+          properties:
+            communes:
+              type: array
+              description: Liste des communes du département
+              items:
+                $ref: '#/components/schemas/Commune'
+
+    Commune:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identifiant unique de la commune
+          example: 1
+        name:
+          type: string
+          description: Nom de la commune
+          example: Biscuiterie
+        departement_id:
+          type: integer
+          description: Identifiant du département parent
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          description: Date de création
+          example: "2024-12-14T10:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Date de modification
+          example: "2024-12-14T10:00:00.000Z"
+
+    CommuneWithHierarchy:
+      allOf:
+        - $ref: '#/components/schemas/Commune'
+        - type: object
+          properties:
+            departement:
+              type: object
+              description: Département parent avec région
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Dakar
+                region_id:
+                  type: integer
+                  example: 1
+                region:
+                  $ref: '#/components/schemas/Region'
+                created_at:
+                  type: string
+                  format: date-time
+                updated_at:
+                  type: string
+                  format: date-time
+
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Resource not found
+
+  responses:
+    NotFound:
+      description: Ressource non trouvée
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+              - message: "Row not found"
+
+  parameters:
+    RegionId:
+      name: regionId
+      in: path
+      required: true
+      description: Identifiant de la région
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+
+    DepartementId:
+      name: departementId
+      in: path
+      required: true
+      description: Identifiant du département
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+
+    CommuneId:
+      name: id
+      in: path
+      required: true
+      description: Identifiant de la commune
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+
+    RegionIdQuery:
+      name: region_id
+      in: query
+      required: false
+      description: Filtrer par identifiant de région
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+
+    DepartementIdQuery:
+      name: departement_id
+      in: query
+      required: false
+      description: Filtrer par identifiant de département
+      schema:
+        type: integer
+        minimum: 1
+      example: 1

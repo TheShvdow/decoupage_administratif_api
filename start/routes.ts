@@ -36,10 +36,7 @@ Route.group(() => {
   Route.get('/regions', 'RegionsController.index') // Liste toutes les régions seulement
   Route.get('/regions/:id', 'RegionsController.show') // Région + départements (sans communes)
   Route.get('/regions/:regionId/departements', 'RegionsController.departements') // Départements d'une région
-  Route.get(
-    '/regions/:regionId/departements/:departementId',
-    'RegionsController.showDepartement'
-  ) // Région + département + communes
+  Route.get('/regions/:regionId/departements/:departementId', 'RegionsController.showDepartement') // Région + département + communes
 
   // Routes Départements
   Route.get('/departements', 'DepartementsController.index') // Liste tous les départements (filtre ?region_id= optionnel)
