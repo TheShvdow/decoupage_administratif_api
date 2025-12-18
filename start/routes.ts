@@ -26,6 +26,13 @@ Route.get('/', async () => {
       "Bienvu dans l'api du Decoupage administratif du Sénégal . Cette Api recence l'ensemble des Regions, Départements et Communes du pays pour faciliter l'intégration dans vos applications. Pour plus d'informations, rendez-vous sur https://github.com/Theshvdow/DecoupageAdministratifSenegalApi",
   }
 })
+Route.get('/health', async () => {
+  return {
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  }
+})
 
 // Routes Documentation
 Route.get('/docs', 'DocsController.redoc') // Documentation Redoc
