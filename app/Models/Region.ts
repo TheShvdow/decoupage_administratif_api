@@ -9,10 +9,10 @@ export default class Region extends BaseModel {
   @column()
   declare public name: string
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   declare public updatedAt: DateTime
 
   @hasMany(() => Departement)

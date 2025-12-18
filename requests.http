@@ -4,7 +4,7 @@ Content-Type: application/json
 Accept: application/javascript
 
 ### Get Region
-GET http://localhost:3333/api/v1/regions/
+GET http://localhost:3333/api/v1/departements/3/communes
 Content-Type: application/json
 Accept: application/json
 

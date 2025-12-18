@@ -1,0 +1,8 @@
+node_modules
+build
+dist
+.adonisrc.json
+ace
+ace-manifest.json
+*.js
+!eslint.config.js

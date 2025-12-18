@@ -13,10 +13,10 @@ export default class Departement extends BaseModel {
   @column()
   declare public regionId: number
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   declare public updatedAt: DateTime
 
   @hasMany(() => Commune)
