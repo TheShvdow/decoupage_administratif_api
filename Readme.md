@@ -22,10 +22,14 @@ API REST construite avec **AdonisJS (TypeScript)** fournissant le découpage adm
 
 ## 🛠️ Stack technique
 
-* **Node.js** (>= 18)
-* **AdonisJS v6**
-* **TypeScript**
-* **pnpm**
+* **Node.js** >= 18
+* **AdonisJS v5** — framework HTTP
+* **Lucid ORM v18** — requêtes et relations (PostgreSQL)
+* **PostgreSQL** — base de données (hébergée sur Neon)
+* **TypeScript** ~5.6 (mode strict)
+* **Luxon** — gestion des dates
+* **Japa** — tests fonctionnels
+* **pnpm** — gestionnaire de paquets
 * Déployée sur **Render**
 
 ---
