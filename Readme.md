@@ -128,6 +128,49 @@ pnpm run test
 
 ---
 
+## 🤝 Contribuer
+
+Les contributions sont les bienvenues ! Voici comment participer :
+
+### 1. Fork & Clone
+
+```bash
+git clone https://github.com/<ton-username>/decoupage_administratif_api.git
+cd decoupage_administratif_api
+pnpm install
+```
+
+### 2. Créer une branche
+
+```bash
+git checkout -b feat/ma-fonctionnalite
+```
+
+### 3. Faire tes modifications
+
+- Respecte la structure existante (AdonisJS v5, TypeScript strict)
+- Ajoute des tests fonctionnels pour chaque nouveau endpoint
+- Vérifie que tous les tests passent :
+
+```bash
+pnpm run test
+```
+
+### 4. Ouvrir une Pull Request
+
+- Décris clairement ce que tu as ajouté ou corrigé
+- Référence l’issue correspondante si elle existe (ex: `Closes #12`)
+- Attends la revue avant le merge
+
+### 5. Signaler un bug ou proposer une idée
+
+Ouvre une [issue GitHub](https://github.com/TheShvdow/decoupage_administratif_api/issues) en décrivant :
+- Le comportement observé
+- Le comportement attendu
+- Les étapes pour reproduire
+
+---
+
 ## 📄 Licence
 
 MIT
