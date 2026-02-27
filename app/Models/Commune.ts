@@ -12,6 +12,15 @@ export default class Commune extends BaseModel {
   @column()
   declare public departementId: number
 
+  @column()
+  declare public lat: number
+
+  @column()
+  declare public lon: number
+
+  @column()
+  declare public elevation: number | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

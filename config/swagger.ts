@@ -34,6 +34,11 @@ const options: swaggerJsdoc.Options = {
               description: 'Nom de la région',
               example: 'Dakar',
             },
+            code: {
+              type: 'string',
+              description: 'Code court de la région',
+              example: 'DK',
+            },
             created_at: {
               type: 'string',
               format: 'date-time',
@@ -58,6 +63,11 @@ const options: swaggerJsdoc.Options = {
               type: 'string',
               description: 'Nom de la région',
               example: 'Dakar',
+            },
+            code: {
+              type: 'string',
+              description: 'Code court de la région',
+              example: 'DK',
             },
             departements: {
               type: 'array',
@@ -163,6 +173,24 @@ const options: swaggerJsdoc.Options = {
               description: 'Identifiant du département parent',
               example: 1,
             },
+            lat: {
+              type: 'number',
+              format: 'double',
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
+            elevation: {
+              type: 'integer',
+              nullable: true,
+              description: "Altitude en mètres (peut être nulle)",
+              example: 25,
+            },
             created_at: {
               type: 'string',
               format: 'date-time',
@@ -192,6 +220,24 @@ const options: swaggerJsdoc.Options = {
               type: 'integer',
               description: 'Identifiant du département parent',
               example: 1,
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
+            elevation: {
+              type: 'integer',
+              nullable: true,
+              description: "Altitude en mètres (peut être nulle)",
+              example: 25,
             },
             departement: {
               type: 'object',
@@ -226,12 +272,48 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        SearchResults: {
+          type: 'object',
+          properties: {
+            query: { type: 'string', example: 'dakar' },
+            total: { type: 'integer', example: 12 },
+            results: {
+              type: 'object',
+              properties: {
+                regions: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Region' },
+                },
+                departements: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Departement' },
+                },
+                communes: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Commune' },
+                },
+              },
+            },
+          },
+        },
+        Stats: {
+          type: 'object',
+          properties: {
+            regions: { type: 'integer', example: 14 },
+            departements: { type: 'integer', example: 46 },
+            communes: { type: 'integer', example: 549 },
+          },
+        },
         SuccessResponse: {
           type: 'object',
           properties: {
             success: {
               type: 'boolean',
               example: true,
+            },
+            message: {
+              type: 'string',
+              example: 'Succès',
             },
             data: {
               type: 'object',
@@ -242,17 +324,35 @@ const options: swaggerJsdoc.Options = {
         ErrorResponse: {
           type: 'object',
           properties: {
+            success: {
+              type: 'boolean',
+              example: false,
+            },
+            message: {
+              type: 'string',
+              example: 'Ressource non trouvée.',
+            },
             errors: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  message: {
-                    type: 'string',
-                    example: 'Resource not found',
-                  },
-                },
-              },
+              nullable: true,
+              example: null,
+            },
+          },
+        },
+      },
+      responses: {
+        NotFound: {
+          description: 'Ressource non trouvée',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ErrorResponse' },
+            },
+          },
+        },
+        BadRequest: {
+          description: 'Paramètre invalide',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ErrorResponse' },
             },
           },
         },

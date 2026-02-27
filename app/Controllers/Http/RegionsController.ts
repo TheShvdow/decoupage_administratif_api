@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Region from 'App/Models/Region'
 import Departement from 'App/Models/Departement'
+import ApiResponse from 'App/Utils/ApiResponse'
 
 export default class RegionsController {
   /**
@@ -22,6 +23,9 @@ export default class RegionsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   type: array
    *                   items:
@@ -29,11 +33,7 @@ export default class RegionsController {
    */
   public async index() {
     const regions = await Region.query().orderBy('name', 'asc')
-
-    return {
-      success: true,
-      data: regions,
-    }
+    return ApiResponse.success(regions)
   }
 
   /**
@@ -63,6 +63,9 @@ export default class RegionsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   $ref: '#/components/schemas/RegionWithDepartements'
    *       404:
@@ -76,10 +79,7 @@ export default class RegionsController {
       })
       .firstOrFail()
 
-    return {
-      success: true,
-      data: region,
-    }
+    return ApiResponse.success(region)
   }
 
   /**
@@ -109,6 +109,9 @@ export default class RegionsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   type: array
    *                   items:
@@ -122,10 +125,7 @@ export default class RegionsController {
       .where('region_id', region.id)
       .orderBy('name', 'asc')
 
-    return {
-      success: true,
-      data: departements,
-    }
+    return ApiResponse.success(departements)
   }
 
   /**
@@ -162,6 +162,9 @@ export default class RegionsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   type: object
    *                   properties:
@@ -187,23 +190,14 @@ export default class RegionsController {
       })
       .firstOrFail()
 
-    // Vérifier que le département appartient bien à cette région
     const departement = region.departements.find((d) => d.id === Number(params.departementId))
     if (!departement) {
-      return response.notFound({
-        errors: [{ message: 'Departement not found in this region' }],
-      })
+      return response.notFound(ApiResponse.error('Département non trouvé dans cette région.'))
     }
 
-    return {
-      success: true,
-      data: {
-        region: {
-          id: region.id,
-          name: region.name,
-        },
-        departement: departement,
-      },
-    }
+    return ApiResponse.success({
+      region: { id: region.id, name: region.name },
+      departement,
+    })
   }
 }

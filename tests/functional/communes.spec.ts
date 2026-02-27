@@ -31,6 +31,16 @@ test.group('Communes', (group) => {
     // @ts-ignore
     client.assert.property(firstCommune, 'departement_id')
     // @ts-ignore
+    client.assert.property(firstCommune, 'lat')
+    // @ts-ignore
+    client.assert.property(firstCommune, 'lon')
+    // @ts-ignore
+    client.assert.property(firstCommune, 'elevation')
+    // @ts-ignore
+    client.assert.isNumber(firstCommune.lat)
+    // @ts-ignore
+    client.assert.isNumber(firstCommune.lon)
+    // @ts-ignore
     client.assert.notProperty(firstCommune, 'departement')
 
     // Vérifie le tri alphabétique
@@ -87,6 +97,12 @@ test.group('Communes', (group) => {
     client.assert.property(data, 'name')
     // @ts-ignore
     client.assert.property(data, 'departement_id')
+    // @ts-ignore
+    client.assert.property(data, 'lat')
+    // @ts-ignore
+    client.assert.property(data, 'lon')
+    // @ts-ignore
+    client.assert.property(data, 'elevation')
     // @ts-ignore
     client.assert.property(data, 'departement')
 
@@ -174,6 +190,43 @@ test.group('Communes', (group) => {
     client.assert.isArray(body.data)
     // @ts-ignore
     client.assert.equal(body.data.length, 0)
+  })
+
+  test('GET /api/v1/communes/abc - should return 400 for non-numeric id', async ({ client }) => {
+    const response = await client.get('/api/v1/communes/abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
+  test('GET /api/v1/communes?departement_id=abc - should return 400 for non-numeric departement_id', async ({
+    client,
+  }) => {
+    const response = await client.get('/api/v1/communes?departement_id=abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
+  test('GET /api/v1/communes?page=1&limit=10 - should return paginated communes', async ({
+    client,
+  }) => {
+    const response = await client.get('/api/v1/communes?page=1&limit=10')
+    response.assertStatus(200)
+    response.assertBodyContains({ success: true })
+
+    const body = response.body()
+    const { data } = body
+    // @ts-ignore
+    client.assert.property(data, 'meta')
+    // @ts-ignore
+    client.assert.property(data, 'data')
+    // @ts-ignore
+    client.assert.isArray(data.data)
+    // @ts-ignore
+    client.assert.equal(data.data.length, 10)
+    // @ts-ignore
+    client.assert.property(data.meta, 'total')
+    // @ts-ignore
+    client.assert.property(data.meta, 'current_page')
   })
 
   test('GET /api/v1/communes - should return all communes without filter', async ({ client }) => {

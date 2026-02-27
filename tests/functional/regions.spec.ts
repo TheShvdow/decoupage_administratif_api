@@ -29,6 +29,10 @@ test.group('Regions', (group) => {
     // @ts-ignore
     client.assert.property(firstRegion, 'name')
     // @ts-ignore
+    client.assert.property(firstRegion, 'code')
+    // @ts-ignore
+    client.assert.isString(firstRegion.code)
+    // @ts-ignore
     client.assert.notProperty(firstRegion, 'departements')
 
     // Vérifie que les régions sont triées alphabétiquement
@@ -54,6 +58,8 @@ test.group('Regions', (group) => {
     client.assert.property(data, 'id')
     // @ts-ignore
     client.assert.property(data, 'name')
+    // @ts-ignore
+    client.assert.property(data, 'code')
     // @ts-ignore
     client.assert.property(data, 'departements')
 
@@ -221,5 +227,17 @@ test.group('Regions', (group) => {
 
       response.assertStatus(404)
     }
+  })
+
+  test('GET /api/v1/regions/abc - should return 400 for non-numeric id', async ({ client }) => {
+    const response = await client.get('/api/v1/regions/abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
+  test('GET /api/v1/regions/0 - should return 400 for zero id', async ({ client }) => {
+    const response = await client.get('/api/v1/regions/0')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
   })
 })

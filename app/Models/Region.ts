@@ -9,6 +9,9 @@ export default class Region extends BaseModel {
   @column()
   declare public name: string
 
+  @column()
+  declare public code: string
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Departement from 'App/Models/Departement'
 import Commune from 'App/Models/Commune'
+import ApiResponse from 'App/Utils/ApiResponse'
 
 export default class DepartementsController {
   /**
@@ -30,26 +31,34 @@ export default class DepartementsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   type: array
    *                   items:
    *                     $ref: '#/components/schemas/Departement'
    */
-  public async index({ request }: HttpContextContract) {
-    const regionId = request.input('region_id')
+  public async index({ request, response }: HttpContextContract) {
+    const regionIdRaw = request.input('region_id')
+
+    if (regionIdRaw !== null && regionIdRaw !== undefined && regionIdRaw !== '') {
+      const regionId = Number(regionIdRaw)
+      if (isNaN(regionId) || regionId <= 0 || !Number.isInteger(regionId)) {
+        return response.badRequest(
+          ApiResponse.error("Le paramètre 'region_id' doit être un entier positif.")
+        )
+      }
+    }
 
     const query = Departement.query().orderBy('name', 'asc')
 
-    if (regionId) {
-      query.where('region_id', regionId)
+    if (regionIdRaw) {
+      query.where('region_id', regionIdRaw)
     }
 
     const departements = await query
-
-    return {
-      success: true,
-      data: departements,
-    }
+    return ApiResponse.success(departements)
   }
 
   /**
@@ -79,6 +88,9 @@ export default class DepartementsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   $ref: '#/components/schemas/DepartementWithCommunes'
    *       404:
@@ -92,10 +104,7 @@ export default class DepartementsController {
       })
       .firstOrFail()
 
-    return {
-      success: true,
-      data: departement,
-    }
+    return ApiResponse.success(departement)
   }
 
   /**
@@ -125,6 +134,9 @@ export default class DepartementsController {
    *                 success:
    *                   type: boolean
    *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
    *                 data:
    *                   type: array
    *                   items:
@@ -138,9 +150,6 @@ export default class DepartementsController {
       .where('departement_id', departement.id)
       .orderBy('name', 'asc')
 
-    return {
-      success: true,
-      data: communes,
-    }
+    return ApiResponse.success(communes)
   }
 }

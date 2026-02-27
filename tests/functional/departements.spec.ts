@@ -176,6 +176,20 @@ test.group('Departements', (group) => {
     response.assertStatus(404)
   })
 
+  test('GET /api/v1/departements/abc - should return 400 for non-numeric id', async ({ client }) => {
+    const response = await client.get('/api/v1/departements/abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
+  test('GET /api/v1/departements?region_id=abc - should return 400 for non-numeric region_id', async ({
+    client,
+  }) => {
+    const response = await client.get('/api/v1/departements?region_id=abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
   test('GET /api/v1/departements/:id/communes - should return empty array for department without communes', async ({
     client,
   }) => {

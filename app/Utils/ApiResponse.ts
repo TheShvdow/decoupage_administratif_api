@@ -1,17 +1,15 @@
 export default class ApiResponse {
-  public static success(data: any, message = 'Succès', status = 200) {
+  public static success<T>(data: T, message = 'Succès') {
     return {
-      success: true,
-      status,
+      success: true as const,
       message,
       data,
     }
   }
 
-  public static error(message = 'Erreur', errors: any = null, status = 400) {
+  public static error(message = 'Erreur', errors: unknown = null) {
     return {
-      success: false,
-      status,
+      success: false as const,
       message,
       errors,
     }

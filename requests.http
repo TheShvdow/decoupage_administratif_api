@@ -3,8 +3,24 @@ GET http://localhost:3333/
 Content-Type: application/json
 Accept: application/javascript
 
-### Get Region
+
+### GET regions
+GET http://localhost:3333/api/v1/regions
+Content-Type: application/json
+Accept: application/json
+
+### Get departements
 GET http://localhost:3333/api/v1/departements/3/communes
 Content-Type: application/json
 Accept: application/json
 
+
+### Get region by querry
+GET http://localhost:3333/api/v1/regions?q=diourbel
+Content-Type: application/json
+Accept: application/json
+
+### Recherche régions seulement
+GET http://localhost:3333/api/v1/search?q=saint
+Content-Type: application/json
+Accept: application/json
