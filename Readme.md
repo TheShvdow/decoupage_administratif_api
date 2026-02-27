@@ -6,12 +6,17 @@ API REST construite avec **AdonisJS (TypeScript)** fournissant le découpage adm
 
 ## 🚀 Fonctionnalités
 
-* 📍 Liste des **14 régions** du Sénégal
-* 🏘️ Récupération des ***46 départements** par région
-* 🏠 Récupération des **549 communes** par département
-* 📦 API REST JSON
-* 🔐 Validation stricte des variables d’environnement
-* 🧪 Tests fonctionnels
+* 📍 Liste des **14 régions** avec leur code (DK, SL, KD...)
+* 🏘️ Liste des **46 départements** par région
+* 🏠 Liste des **549 communes** avec coordonnées GPS et altitude
+* 🔍 Recherche par nom dans les régions, départements et communes (avec relations imbriquées)
+* 📊 Statistiques globales (nombre de régions, départements, communes)
+* 📄 Pagination sur la liste des communes
+* 🌐 CORS activé
+* 🛡️ Validation des paramètres d’URL (IDs numériques)
+* 📦 Réponses JSON uniformisées `{ success, message, data }`
+* 📖 Documentation interactive (Redoc + OpenAPI)
+* 🧪 49 tests fonctionnels
 
 ---
 
