@@ -155,8 +155,8 @@ Tous les endpoints sont préfixés par `/api/v1`.
 |---------|----------|-------------|
 | `GET` | `/api/v1/stats` | Nombre total de régions, départements et communes |
 | `GET` | `/health` | Statut du serveur (uptime, timestamp) |
-| `GET` | `/docs` | Documentation interactive (Redoc) |
-| `GET` | `/api/openapi.json` | Spécification OpenAPI JSON |
+| `GET` | `/docs` | [Documentation interactive (Redoc)](https://decoupage-administratif-api.onrender.com/docs) |
+| `GET` | `/api/openapi.json` | [Spécification OpenAPI JSON](https://decoupage-administratif-api.onrender.com/api/openapi.json) |
 
 ---
 
