@@ -98,25 +98,56 @@ cd build && node server.js
 
 ---
 
-## 📚 Endpoints principaux
+## 📚 Endpoints
+
+Tous les endpoints sont préfixés par `/api/v1`.
 
 ### 🔹 Régions
 
-```http
-GET /regions
-```
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/v1/regions` | Liste des 14 régions |
+| `GET` | `/api/v1/regions/:id` | Région + ses départements |
+| `GET` | `/api/v1/regions/:regionId/departements` | Départements d’une région |
+| `GET` | `/api/v1/regions/:regionId/departements/:departementId` | Département + ses communes |
 
-### 🔹 Départements d’une région
+### 🔹 Départements
 
-```http
-GET /regions/:id/departements
-```
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/v1/departements` | Liste de tous les départements |
+| `GET` | `/api/v1/departements?region_id=1` | Départements filtrés par région |
+| `GET` | `/api/v1/departements/:id` | Département + ses communes |
+| `GET` | `/api/v1/departements/:id/communes` | Communes d’un département |
 
-### 🔹 Communes d’un département
+### 🔹 Communes
 
-```http
-GET /departements/:id/communes
-```
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/v1/communes` | Liste de toutes les communes |
+| `GET` | `/api/v1/communes?departement_id=1` | Communes filtrées par département |
+| `GET` | `/api/v1/communes?page=1&limit=10` | Communes paginées |
+| `GET` | `/api/v1/communes/:id` | Commune + département + région |
+
+### 🔹 Recherche
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/v1/search?q=dakar` | Recherche dans régions, départements et communes |
+| `GET` | `/api/v1/search?q=dakar&type=region` | Recherche limitée aux régions (avec départements et communes imbriqués) |
+| `GET` | `/api/v1/search?q=dakar&type=departement` | Recherche limitée aux départements (avec communes) |
+| `GET` | `/api/v1/search?q=dakar&type=commune` | Recherche limitée aux communes (avec département et région) |
+
+> Le paramètre `q` doit contenir au moins 2 caractères. La recherche est insensible à la casse.
+
+### 🔹 Statistiques & Utilitaires
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/v1/stats` | Nombre total de régions, départements et communes |
+| `GET` | `/health` | Statut du serveur (uptime, timestamp) |
+| `GET` | `/docs` | Documentation interactive (Redoc) |
+| `GET` | `/api/openapi.json` | Spécification OpenAPI JSON |
 
 ---
 
