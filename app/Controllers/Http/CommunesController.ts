@@ -125,7 +125,6 @@ export default class CommunesController {
   public async show({ params }: HttpContextContract) {
     const commune = await Commune.query()
       .where('id', params.id)
-      .preload('localites')
       .preload('departement', (deptQuery) => {
         deptQuery.preload('region')
       })
@@ -136,23 +135,23 @@ export default class CommunesController {
 
   /**
    * @swagger
-   * /api/v1/departements/{id}/communes:
+   * /api/v1/communes/{id}/localites:
    *   get:
    *     tags:
-   *       - Départements
-   *     summary: Liste des communes d'un département
-   *     description: Retourne toutes les communes d'un département spécifique
+   *       - Communes
+   *     summary: Liste des localités d'une commune
+   *     description: Retourne toutes les localités d'une commune spécifique
    *     parameters:
    *       - name: id
    *         in: path
    *         required: true
-   *         description: Identifiant du département
+   *         description: Identifiant de la commune
    *         schema:
    *           type: number
    *           example: 1
    *     responses:
    *       200:
-   *         description: Liste des communes
+   *         description: Liste des localités
    *         content:
    *           application/json:
    *             schema:
@@ -167,7 +166,7 @@ export default class CommunesController {
    *                 data:
    *                   type: array
    *                   items:
-   *                     $ref: '#/components/schemas/Commune'
+   *                     $ref: '#/components/schemas/Localite'
    *       404:
    *         $ref: '#/components/responses/NotFound'
    */

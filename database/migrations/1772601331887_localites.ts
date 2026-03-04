@@ -10,6 +10,7 @@ export default class extends BaseSchema {
       table
         .integer('commune_id')
         .unsigned()
+        .notNullable()
         .references('id')
         .inTable('communes')
         .onDelete('CASCADE')

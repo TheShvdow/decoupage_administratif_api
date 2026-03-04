@@ -272,6 +272,84 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        Localite: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'Identifiant unique de la localité',
+              example: 1,
+            },
+            name: {
+              type: 'string',
+              description: 'Nom de la localité',
+              example: 'Keur Moussa',
+            },
+            commune_id: {
+              type: 'integer',
+              description: 'Identifiant de la commune parent',
+              example: 1,
+            },
+          },
+        },
+        LocaliteWithHierarchy: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'Identifiant unique de la localité',
+              example: 1,
+            },
+            name: {
+              type: 'string',
+              description: 'Nom de la localité',
+              example: 'Keur Moussa',
+            },
+            commune_id: {
+              type: 'integer',
+              description: 'Identifiant de la commune parent',
+              example: 1,
+            },
+            commune: {
+              type: 'object',
+              description: 'Commune parent',
+              properties: {
+                id: {
+                  type: 'integer',
+                  example: 1,
+                },
+                name: {
+                  type: 'string',
+                  example: 'Dakar Plateau',
+                },
+                departement_id: {
+                  type: 'integer',
+                  example: 1,
+                },
+                departement: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'integer',
+                      example: 1,
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'Dakar',
+                    },
+                    region_id: {
+                      type: 'integer',
+                      example: 1,
+                    },
+                    region: {
+                      $ref: '#/components/schemas/Region',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         SearchResults: {
           type: 'object',
           properties: {
@@ -292,6 +370,10 @@ const options: swaggerJsdoc.Options = {
                   type: 'array',
                   items: { $ref: '#/components/schemas/Commune' },
                 },
+                localites: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Localite' },
+                },
               },
             },
           },
@@ -302,6 +384,7 @@ const options: swaggerJsdoc.Options = {
             regions: { type: 'integer', example: 14 },
             departements: { type: 'integer', example: 46 },
             communes: { type: 'integer', example: 549 },
+            localites: { type: 'integer', example: 0 },
           },
         },
         SuccessResponse: {

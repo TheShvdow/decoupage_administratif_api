@@ -29,10 +29,11 @@ export default class StatsController {
    *                   $ref: '#/components/schemas/Stats'
    */
   public async index(_ctx: HttpContextContract) {
-    const [[regionsCount], [departementsCount], [communesCount]] = await Promise.all([
+    const [[regionsCount], [departementsCount], [communesCount], [localitesCount]] = await Promise.all([
       Database.from('regions').count('* as total'),
       Database.from('departements').count('* as total'),
       Database.from('communes').count('* as total'),
+      Database.from('localites').count('* as total'),
     ])
 
     return ApiResponse.success(
@@ -40,6 +41,7 @@ export default class StatsController {
         regions: Number(regionsCount.total),
         departements: Number(departementsCount.total),
         communes: Number(communesCount.total),
+        localites: Number(localitesCount.total),
       },
       'Statistiques globales du découpage administratif du Sénégal'
     )
