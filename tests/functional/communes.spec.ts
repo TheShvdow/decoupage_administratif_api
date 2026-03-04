@@ -247,4 +247,92 @@ test.group('Communes', (group) => {
     // @ts-ignore
     client.assert.equal(allCommunes.length, totalCommunesByDept)
   })
+
+  test('GET /api/v1/communes/:id/localites - should return localites of a commune', async ({
+    client,
+  }) => {
+    const response = await client.get('/api/v1/communes/1/localites')
+
+    response.assertStatus(200)
+    response.assertBodyContains({ success: true })
+
+    const body = response.body()
+    const { data } = body
+
+    // @ts-ignore
+    client.assert.isArray(data)
+
+    // Vérifie la structure des localites
+    if (data.length > 0) {
+      const firstLocalite = data[0]
+      // @ts-ignore
+      client.assert.property(firstLocalite, 'id')
+      // @ts-ignore
+      client.assert.property(firstLocalite, 'name')
+      // @ts-ignore
+      client.assert.property(firstLocalite, 'commune_id')
+
+      // Vérifie que toutes les communes appartiennent au département
+      data.forEach((localite: { commune_id: number }) => {
+        // @ts-ignore
+        client.assert.equal(localite.commune_id, 1)
+      })
+
+      // Vérifie le tri alphabétique
+      const localiteNames = data.map((c: { name: string }) => c.name)
+      const sortedNames = [...localiteNames].sort()
+      // @ts-ignore
+      client.assert.deepEqual(localiteNames, sortedNames)
+    }
+  })
+
+  test('GET /api/v1/communes/:id/localites - should return 404 for non-existent commune', async ({
+    client,
+  }) => {
+    const response = await client.get('/api/v1/communes/999999/localites')
+
+    response.assertStatus(404)
+  })
+
+  test('GET /api/v1/communes/abc - should return 400 for non-numeric id', async ({ client }) => {
+    const response = await client.get('/api/v1/communes/abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
+  test('GET /api/v1/communes?departement_id=abc - should return 400 for non-numeric departement_id', async ({
+    client,
+  }) => {
+    const response = await client.get('/api/v1/communes?departement_id=abc')
+    response.assertStatus(400)
+    response.assertBodyContains({ success: false })
+  })
+
+  test('GET /api/v1/communes/:id/localites - should return empty array for commune without localites', async ({
+    client,
+  }) => {
+    // Récupérer tous les communes
+    const communeResponse = await client.get('/api/v1/communes')
+    const communes = communeResponse.body().data
+
+    // Trouver une commune sans localités (si existant)
+    for (const commune of communes) {
+      const communeDetailResponse = await client.get(`/api/v1/communes/${commune.id}`)
+      const communeDetail = communeDetailResponse.body().data
+
+      if (communeDetail.localites.length === 0) {        
+        const response = await client.get(`/api/v1/communes/${commune.id}/localites`)
+
+        response.assertStatus(200)
+        response.assertBodyContains({ success: true })
+
+        const body = response.body()
+        // @ts-ignore
+        client.assert.isArray(body.data)
+        // @ts-ignore
+        client.assert.equal(body.data.length, 0)
+        break
+      }
+    }
+  })  
 })

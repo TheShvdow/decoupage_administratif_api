@@ -137,6 +137,17 @@ Tous les endpoints sont préfixés par `/api/v1`.
 | `GET` | `/api/v1/communes?departement_id=1` | Communes filtrées par département |
 | `GET` | `/api/v1/communes?page=1&limit=10` | Communes paginées |
 | `GET` | `/api/v1/communes/:id` | Commune + département + région |
+| `GET` | `/api/v1/communes/:id/localites` | Localités d’une commune |
+
+
+### 🔹 Localités
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/v1/localites` | Liste de toutes les localités |
+| `GET` | `/api/v1/localites?commune_id=1` | Localités filtrées par commune |
+| `GET` | `/api/v1/localites?page=1&limit=10` | Localités paginées |
+| `GET` | `/api/v1/localites/:id` | Localité + département + région |
 
 ### 🔹 Recherche
 
@@ -146,6 +157,7 @@ Tous les endpoints sont préfixés par `/api/v1`.
 | `GET` | `/api/v1/search?q=dakar&type=region` | Recherche limitée aux régions (avec départements et communes imbriqués) |
 | `GET` | `/api/v1/search?q=dakar&type=departement` | Recherche limitée aux départements (avec communes) |
 | `GET` | `/api/v1/search?q=dakar&type=commune` | Recherche limitée aux communes (avec département et région) |
+| `GET` | `/api/v1/search?q=dakar&type=localite` | Recherche limitée aux localités (avec département et région) |
 
 > Le paramètre `q` doit contenir au moins 2 caractères. La recherche est insensible à la casse.
 
@@ -153,7 +165,7 @@ Tous les endpoints sont préfixés par `/api/v1`.
 
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| `GET` | `/api/v1/stats` | Nombre total de régions, départements et communes |
+| `GET` | `/api/v1/stats` | Nombre total de régions, départements, communes et localités |
 | `GET` | `/health` | Statut du serveur (uptime, timestamp) |
 | `GET` | `/docs` | [Documentation interactive (Redoc)](https://decoupage-administratif-api.onrender.com/docs) |
 | `GET` | `/api/openapi.json` | [Spécification OpenAPI JSON](https://decoupage-administratif-api.onrender.com/api/openapi.json) |

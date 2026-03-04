@@ -55,6 +55,11 @@ Route.group(() => {
   // Routes Communes
   Route.get('/communes', 'CommunesController.index') // Liste toutes les communes (filtre ?departement_id= optionnel)
   Route.get('/communes/:id', 'CommunesController.show').middleware('validateId') // Commune + département + région
+  Route.get('/communes/:id/localites', 'CommunesController.localites').middleware('validateId') // Localités d'une commune
+
+  // Routes Localités
+  Route.get('/localites', 'LocalitesController.index') // Liste toutes les localités
+  Route.get('/localites/:id', 'LocalitesController.show').middleware('validateId') // Localité + commune + département + région
 
   // Recherche & Statistiques
   Route.get('/search', 'SearchController.index') // Recherche par nom dans régions/départements/communes

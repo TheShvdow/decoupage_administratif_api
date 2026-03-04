@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Commune from 'App/Models/Commune'
+import Localite from 'App/Models/Localite'
 import ApiResponse from 'App/Utils/ApiResponse'
 
 export default class CommunesController {
@@ -124,11 +125,58 @@ export default class CommunesController {
   public async show({ params }: HttpContextContract) {
     const commune = await Commune.query()
       .where('id', params.id)
+      .preload('localites')
       .preload('departement', (deptQuery) => {
         deptQuery.preload('region')
       })
       .firstOrFail()
 
     return ApiResponse.success(commune)
+  }
+
+  /**
+   * @swagger
+   * /api/v1/departements/{id}/communes:
+   *   get:
+   *     tags:
+   *       - Départements
+   *     summary: Liste des communes d'un département
+   *     description: Retourne toutes les communes d'un département spécifique
+   *     parameters:
+   *       - name: id
+   *         in: path
+   *         required: true
+   *         description: Identifiant du département
+   *         schema:
+   *           type: number
+   *           example: 1
+   *     responses:
+   *       200:
+   *         description: Liste des communes
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
+   *                 data:
+   *                   type: array
+   *                   items:
+   *                     $ref: '#/components/schemas/Commune'
+   *       404:
+   *         $ref: '#/components/responses/NotFound'
+   */
+  public async localites({ params }: HttpContextContract) {
+    const commune = await Commune.findOrFail(params.id)
+    const localites = await Localite.query()
+      .where('commune_id', commune.id)
+      .orderBy('name', 'asc')
+
+    return ApiResponse.success(localites)  
   }
 }
