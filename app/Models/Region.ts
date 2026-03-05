@@ -12,6 +12,12 @@ export default class Region extends BaseModel {
   @column()
   declare public code: string
 
+  @column()
+  declare public lat: number | null
+
+  @column()
+  declare public lon: number | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

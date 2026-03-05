@@ -1,70 +1,59 @@
-# feat: ajout des localités — 4ème niveau du découpage administratif
+# feat: ajout des coordonnées GPS pour les régions et départements
 
 ## Résumé global
 
-Cette branche complète le découpage administratif du Sénégal en ajoutant le **4ème niveau hiérarchique : les localités** (villages, quartiers). Elle s'appuie sur la base déjà construite (régions → départements → communes) pour l'étendre avec les localités, ainsi que les routes, le modèle, la migration et les tests associés.
+Cette branche enrichit les données des **régions** et **départements** du Sénégal en ajoutant des **coordonnées géographiques** (latitude, longitude) ainsi qu'un **code administratif** pour les départements.
 
 ---
 
 ## Fonctionnalités principales ajoutées
 
-- **Localités** : nouveau modèle `Localite` avec relation `belongsTo Commune`
-- **`LocalitesController`** : liste, détail, pagination, filtre par `commune_id`, hiérarchie complète (localité → commune → département → région)
-- **`GET /api/v1/communes/:id/localites`** : liste des localités d'une commune
-- **Pagination** sur `GET /api/v1/localites` (`?page=&limit=`)
-- **Filtre** par `?commune_id=` sur la liste des localités
-
----
-
-## Nouveaux endpoints API
-
-| Méthode | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/v1/localites` | Liste toutes les localités (filtre `?commune_id=`, pagination `?page=&limit=`) |
-| `GET` | `/api/v1/localites/:id` | Localité avec hiérarchie complète (commune → département → région) |
-| `GET` | `/api/v1/communes/:id/localites` | Localités d'une commune donnée |
-
-> **Rappel — endpoints existants :**
-> `GET /api/v1/regions`, `/regions/:id`, `/regions/:regionId/departements`, `/regions/:regionId/departements/:departementId`, `/departements`, `/departements/:id`, `/departements/:id/communes`, `/communes`, `/communes/:id`, `/search?q=&type=`, `/stats`, `/health`, `/docs`, `/api/openapi.json`
+- **Coordonnées GPS des régions** : champs `lat` et `lon` ajoutés aux 14 régions
+- **Coordonnées GPS des départements** : champs `lat` et `lon` ajoutés aux 46 départements
+- **Code administratif des départements** : champ `code` ajouté aux 46 départements
 
 ---
 
 ## Changements techniques importants
 
-- **Migration** `1772601331887_localites.ts` — nouvelle table `localites` avec `FK → communes`
-- **Modèle** `app/Models/Localite.ts` — relation `belongsTo` vers `Commune`
-- **Contrôleur** `app/Controllers/Http/LocalitesController.ts` — index, show, validation `ValidateId`
-- **Route** `CommunesController.localites` — sous-ressource ajoutée
-- Mise à jour du **seeder** et des **données** `database/data/senegal.ts` avec les localités
-- Mise à jour des **specs OpenAPI** (`config/swagger.ts`) pour documenter les nouveaux endpoints
+- **Migration** `1772601340000_add_coordinates_to_regions_and_departements.ts` — ajout des colonnes `lat`, `lon` à `regions` et `code`, `lat`, `lon` à `departements`
+- **Modèle** `app/Models/Region.ts` — ajout des propriétés `lat` et `lon`
+- **Modèle** `app/Models/Departement.ts` — ajout des propriétés `code`, `lat` et `lon`
+- **Script** `scripts/import_coordinates.ts` — lecture des CSV, normalisation des noms (accents, tirets), mise à jour via Lucid Database, résumé final
+- **Specs OpenAPI** (`config/swagger.ts`) — schémas `Region`, `RegionWithDepartements`, `Departement`, `DepartementWithCommunes` mis à jour avec `lat`, `lon`, `code`
+- **Tests** — vérification de la présence des champs `lat`, `lon` dans les réponses régions et `code`, `lat`, `lon` dans les réponses départements
+- **README.md** — descriptions des entités mises à jour
 
 ---
 
-## Tests ajoutés
+## Réponses JSON mises à jour
 
-- **`tests/functional/localites.spec.ts`** — nouveau fichier de tests (11 cas)
-- **`tests/functional/communes.spec.ts`** — 4 nouveaux cas pour `GET /api/v1/communes/:id/localites`
+### Region
 
-### Cas testés
-
-- Liste toutes les localités
-- Filtre `?commune_id=`
-- Pagination `?page=1&limit=10`
-- Localité avec hiérarchie complète
-- 404 localité inexistante
-- 400 id non numérique
-- 400 `commune_id` non numérique
-- Tableau vide pour `commune_id` inexistant
-- Cohérence des données sur plusieurs requêtes
-- Cohérence de la hiérarchie (localité → commune → département → région)
-- `GET /api/v1/communes/:id/localites` — 404, 400, liste vide
-
----
-
-## Résultats des tests
-
-```
-Tests : 65 passed (65)
+```json
+{
+  "id": 1,
+  "name": "Dakar",
+  "code": "DK",
+  "lat": 14.7546268300533,
+  "lon": -17.265298801692
+}
 ```
 
-**65/65 tests passent** (7 suites : communes, departements, docs, localites, regions, search, stats)
+### Departement
+
+```json
+{
+  "id": 1,
+  "name": "Dakar",
+  "code": "DK",
+  "region_id": 1,
+  "lat": 14.7224089876618,
+  "lon": -17.4602367337582
+}
+```
+
+## Tests mis à jour
+
+- **`tests/functional/regions.spec.ts`** — vérification des propriétés `lat` et `lon`
+- **`tests/functional/departements.spec.ts`** — vérification des propriétés `code`, `lat` et `lon`

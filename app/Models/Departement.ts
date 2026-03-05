@@ -13,6 +13,15 @@ export default class Departement extends BaseModel {
   @column()
   declare public regionId: number
 
+  @column()
+  declare public code: string | null
+
+  @column()
+  declare public lat: number | null
+
+  @column()
+  declare public lon: number | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

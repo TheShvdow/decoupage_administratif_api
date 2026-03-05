@@ -33,6 +33,12 @@ test.group('Departements', (group) => {
     // @ts-ignore
     client.assert.property(firstDept, 'region_id')
     // @ts-ignore
+    client.assert.property(firstDept, 'code')
+    // @ts-ignore
+    client.assert.property(firstDept, 'lat')
+    // @ts-ignore
+    client.assert.property(firstDept, 'lon')
+    // @ts-ignore
     client.assert.notProperty(firstDept, 'communes')
     // @ts-ignore
     client.assert.notProperty(firstDept, 'region')
@@ -91,6 +97,12 @@ test.group('Departements', (group) => {
     client.assert.property(data, 'name')
     // @ts-ignore
     client.assert.property(data, 'region_id')
+    // @ts-ignore
+    client.assert.property(data, 'code')
+    // @ts-ignore
+    client.assert.property(data, 'lat')
+    // @ts-ignore
+    client.assert.property(data, 'lon')
     // @ts-ignore
     client.assert.property(data, 'communes')
 

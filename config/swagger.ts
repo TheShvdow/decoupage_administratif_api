@@ -39,6 +39,20 @@ const options: swaggerJsdoc.Options = {
               description: 'Code court de la région',
               example: 'DK',
             },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
             created_at: {
               type: 'string',
               format: 'date-time',
@@ -68,6 +82,20 @@ const options: swaggerJsdoc.Options = {
               type: 'string',
               description: 'Code court de la région',
               example: 'DK',
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
             },
             departements: {
               type: 'array',
@@ -101,10 +129,30 @@ const options: swaggerJsdoc.Options = {
               description: 'Nom du département',
               example: 'Dakar',
             },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code administratif du département',
+              example: 'DK',
+            },
             region_id: {
               type: 'integer',
               description: 'Identifiant de la région parent',
               example: 1,
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
             },
             created_at: {
               type: 'string',
@@ -131,10 +179,30 @@ const options: swaggerJsdoc.Options = {
               description: 'Nom du département',
               example: 'Dakar',
             },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code administratif du département',
+              example: 'DK',
+            },
             region_id: {
               type: 'integer',
               description: 'Identifiant de la région parent',
               example: 1,
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
             },
             communes: {
               type: 'array',

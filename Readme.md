@@ -9,6 +9,7 @@ API REST construite avec **AdonisJS (TypeScript)** fournissant le découpage adm
 * 📍 Liste des **14 régions** avec leur code (DK, SL, KD...)
 * 🏘️ Liste des **46 départements** par région
 * 🏠 Liste des **549 communes** avec coordonnées GPS et altitude
+*     Liste des **24560 localités**
 * 🔍 Recherche par nom dans les régions, départements et communes (avec relations imbriquées)
 * 📊 Statistiques globales (nombre de régions, départements, communes)
 * 📄 Pagination sur la liste des communes
@@ -115,7 +116,7 @@ Tous les endpoints sont préfixés par `/api/v1`.
 
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| `GET` | `/api/v1/regions` | Liste des 14 régions |
+| `GET` | `/api/v1/regions` | Liste des 14 régions (avec code et coordonnées GPS) |
 | `GET` | `/api/v1/regions/:id` | Région + ses départements |
 | `GET` | `/api/v1/regions/:regionId/departements` | Départements d’une région |
 | `GET` | `/api/v1/regions/:regionId/departements/:departementId` | Département + ses communes |
@@ -124,7 +125,7 @@ Tous les endpoints sont préfixés par `/api/v1`.
 
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| `GET` | `/api/v1/departements` | Liste de tous les départements |
+| `GET` | `/api/v1/departements` | Liste de tous les départements (avec code et coordonnées GPS) |
 | `GET` | `/api/v1/departements?region_id=1` | Départements filtrés par région |
 | `GET` | `/api/v1/departements/:id` | Département + ses communes |
 | `GET` | `/api/v1/departements/:id/communes` | Communes d’un département |
@@ -133,7 +134,7 @@ Tous les endpoints sont préfixés par `/api/v1`.
 
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| `GET` | `/api/v1/communes` | Liste de toutes les communes |
+| `GET` | `/api/v1/communes` | Liste de toutes les communes (avec coordonnées GPS) |
 | `GET` | `/api/v1/communes?departement_id=1` | Communes filtrées par département |
 | `GET` | `/api/v1/communes?page=1&limit=10` | Communes paginées |
 | `GET` | `/api/v1/communes/:id` | Commune + département + région |
