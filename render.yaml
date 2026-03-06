@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: decoupage-administratif-api
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm run build
+    startCommand: cd build && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 3333
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_NAME
+        value: decoupage_administratif_api
+      - key: DRIVE_DISK
+        value: local
+      - key: DB_CONNECTION
+        value: pg
+      - key: DATABASE_URL
+        sync: false
