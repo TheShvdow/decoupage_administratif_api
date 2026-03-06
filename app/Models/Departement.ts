@@ -22,6 +22,9 @@ export default class Departement extends BaseModel {
   @column()
   declare public lon: number | null
 
+  @column()
+  declare public elevation: number | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

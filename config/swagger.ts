@@ -53,6 +53,13 @@ const options: swaggerJsdoc.Options = {
               description: 'Longitude GPS',
               example: -17.4467,
             },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 15,
+            },
             created_at: {
               type: 'string',
               format: 'date-time',
@@ -96,6 +103,13 @@ const options: swaggerJsdoc.Options = {
               nullable: true,
               description: 'Longitude GPS',
               example: -17.4467,
+            },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 15,
             },
             departements: {
               type: 'array',
@@ -154,6 +168,13 @@ const options: swaggerJsdoc.Options = {
               description: 'Longitude GPS',
               example: -17.4467,
             },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 31,
+            },
             created_at: {
               type: 'string',
               format: 'date-time',
@@ -204,6 +225,13 @@ const options: swaggerJsdoc.Options = {
               description: 'Longitude GPS',
               example: -17.4467,
             },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 31,
+            },
             communes: {
               type: 'array',
               description: 'Liste des communes du département',
@@ -240,6 +268,12 @@ const options: swaggerJsdoc.Options = {
               type: 'integer',
               description: 'Identifiant du département parent',
               example: 1,
+            },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code unique de la commune (code département + numéro séquentiel)',
+              example: 'DK03',
             },
             lat: {
               type: 'number',
@@ -288,6 +322,12 @@ const options: swaggerJsdoc.Options = {
               type: 'integer',
               description: 'Identifiant du département parent',
               example: 1,
+            },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code unique de la commune (code département + numéro séquentiel)',
+              example: 'DK03',
             },
             lat: {
               type: 'number',

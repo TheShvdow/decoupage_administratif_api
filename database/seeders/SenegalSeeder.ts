@@ -14,12 +14,19 @@ export default class SenegalSeeder extends BaseSeeder {
       const region = await Region.create({
         name: regionData.name,
         code: regionData.code,
+        lat: regionData.lat,
+        lon: regionData.lon,
+        elevation: regionData.elevation,
       })
 
       for (const deptData of regionData.departements) {
         const departement = await Departement.create({
           name: deptData.name,
           regionId: region.id,
+          code: deptData.code,
+          lat: deptData.lat,
+          lon: deptData.lon,
+          elevation: deptData.elevation,
         })
 
         for (const communeData of deptData.communes) {

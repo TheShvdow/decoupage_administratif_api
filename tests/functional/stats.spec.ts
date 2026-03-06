@@ -16,11 +16,15 @@ test.group('Stats', () => {
     // @ts-ignore
     client.assert.property(data, 'communes')
     // @ts-ignore
+    client.assert.property(data, 'localites')
+    // @ts-ignore
     client.assert.isNumber(data.regions)
     // @ts-ignore
     client.assert.isNumber(data.departements)
     // @ts-ignore
     client.assert.isNumber(data.communes)
+    // @ts-ignore
+    client.assert.isNumber(data.localites)
 
     // Le Sénégal a exactement 14 régions
     // @ts-ignore
@@ -29,6 +33,8 @@ test.group('Stats', () => {
     client.assert.isAbove(data.departements, 0)
     // @ts-ignore
     client.assert.isAbove(data.communes, 0)
+    // @ts-ignore
+    client.assert.isAbove(data.localites, 0)
   })
 
   test('GET /api/v1/stats - communes count should match actual communes', async ({ client }) => {

@@ -37,6 +37,8 @@ test.group('Regions', (group) => {
     // @ts-ignore
     client.assert.property(firstRegion, 'lon')
     // @ts-ignore
+    client.assert.property(firstRegion, 'elevation')
+    // @ts-ignore
     client.assert.notProperty(firstRegion, 'departements')
 
     // Vérifie que les régions sont triées alphabétiquement
@@ -68,6 +70,8 @@ test.group('Regions', (group) => {
     client.assert.property(data, 'lat')
     // @ts-ignore
     client.assert.property(data, 'lon')
+    // @ts-ignore
+    client.assert.property(data, 'elevation')
     // @ts-ignore
     client.assert.property(data, 'departements')
 

@@ -308,31 +308,20 @@ test.group('Communes', (group) => {
     response.assertBodyContains({ success: false })
   })
 
-  test('GET /api/v1/communes/:id/localites - should return empty array for commune without localites', async ({
+  test('GET /api/v1/communes/:id/localites - should return array for any commune', async ({
     client,
   }) => {
-    // Récupérer tous les communes
+    // Vérifier que l'endpoint localites retourne un tableau valide
     const communeResponse = await client.get('/api/v1/communes')
     const communes = communeResponse.body().data
 
-    // Trouver une commune sans localités (si existant)
-    for (const commune of communes) {
-      const communeDetailResponse = await client.get(`/api/v1/communes/${commune.id}`)
-      const communeDetail = communeDetailResponse.body().data
+    // Tester le premier commune
+    const response = await client.get(`/api/v1/communes/${communes[0].id}/localites`)
+    response.assertStatus(200)
+    response.assertBodyContains({ success: true })
 
-      if (communeDetail.localites.length === 0) {        
-        const response = await client.get(`/api/v1/communes/${commune.id}/localites`)
-
-        response.assertStatus(200)
-        response.assertBodyContains({ success: true })
-
-        const body = response.body()
-        // @ts-ignore
-        client.assert.isArray(body.data)
-        // @ts-ignore
-        client.assert.equal(body.data.length, 0)
-        break
-      }
-    }
+    const body = response.body()
+    // @ts-ignore
+    client.assert.isArray(body.data)
   })  
 })
