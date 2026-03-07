@@ -48,27 +48,53 @@ async function log(msg) {
   process.stdout.write(msg + '\n')
 }
 
+/**
+ * Normalise un nom pour la comparaison floue :
+ * - minuscules
+ * - supprime les accents (NFD + strip combining marks)
+ * - remplace tirets, apostrophes, underscores par un espace
+ * - collapse les espaces multiples
+ */
+function normalize(str) {
+  if (!str) return ''
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')   // strip accents
+    .toLowerCase()
+    .replace(/[-_'\u2019]/g, ' ')        // tirets/apostrophes → espace
+    .replace(/\s+/g, ' ')               // espaces multiples → un seul
+    .trim()
+}
+
 // ── 1. Régions ───────────────────────────────────────────────────────────────
 async function migrateRegions() {
   log('\n=== Régions ===')
   const { rows } = await source.query(
     'SELECT name, ST_AsGeoJSON(geometry)::text AS geojson, superficie_km2, population, densite FROM regions'
   )
+  // Construire map normalisé → name cible réel
+  const { rows: tgtRegions } = await target.query('SELECT name FROM regions')
+  const tgtRegionNormMap = new Map(tgtRegions.map((r) => [normalize(r.name), r.name]))
+
   let updated = 0
+  let skipped = []
   for (const row of rows) {
     if (!row.geojson) continue
+    const tgtName = tgtRegionNormMap.get(normalize(row.name))
+    if (!tgtName) { skipped.push(row.name); continue }
     const res = await target.query(
       `UPDATE regions
        SET geometry       = ST_SetSRID(ST_GeomFromGeoJSON($1), 4326),
            superficie_km2 = $2,
            population     = $3,
            densite        = $4
-       WHERE LOWER(name) = LOWER($5)`,
-      [row.geojson, row.superficie_km2, row.population, row.densite, row.name]
+       WHERE name = $5`,
+      [row.geojson, row.superficie_km2, row.population, row.densite, tgtName]
     )
     if (res.rowCount > 0) updated++
   }
   log(`  ✓ ${updated}/${rows.length} régions mises à jour`)
+  if (skipped.length) log(`  ⚠ Non-matchées : ${skipped.join(', ')}`)
 }
 
 // ── 2. Départements ──────────────────────────────────────────────────────────
@@ -77,18 +103,25 @@ async function migrateDepartements() {
   const { rows } = await source.query(
     'SELECT name, region_id, ST_AsGeoJSON(geometry)::text AS geojson, superficie_km2, population, densite FROM departements'
   )
-  // Construire une map region_id source → region_id cible par nom
+  // map region_id source → region_id cible (matching normalisé)
   const { rows: srcRegions } = await source.query('SELECT id, name FROM regions')
   const { rows: tgtRegions } = await target.query('SELECT id, name FROM regions')
   const regionIdMap = new Map()
   for (const sr of srcRegions) {
-    const tr = tgtRegions.find((r) => r.name.toLowerCase() === sr.name.toLowerCase())
+    const tr = tgtRegions.find((r) => normalize(r.name) === normalize(sr.name))
     if (tr) regionIdMap.set(sr.id, tr.id)
   }
 
+  // map normalisé → name réel cible pour les départements
+  const { rows: tgtDepts } = await target.query('SELECT name FROM departements')
+  const tgtDeptNormMap = new Map(tgtDepts.map((d) => [normalize(d.name), d.name]))
+
   let updated = 0
+  let skipped = []
   for (const row of rows) {
     if (!row.geojson) continue
+    const tgtName = tgtDeptNormMap.get(normalize(row.name))
+    if (!tgtName) { skipped.push(row.name); continue }
     const tgtRegionId = regionIdMap.get(row.region_id) ?? null
     const res = await target.query(
       `UPDATE departements
@@ -97,12 +130,13 @@ async function migrateDepartements() {
            population     = $3,
            densite        = $4,
            region_id      = COALESCE(region_id, $5)
-       WHERE LOWER(name) = LOWER($6)`,
-      [row.geojson, row.superficie_km2, row.population, row.densite, tgtRegionId, row.name]
+       WHERE name = $6`,
+      [row.geojson, row.superficie_km2, row.population, row.densite, tgtRegionId, tgtName]
     )
     if (res.rowCount > 0) updated++
   }
   log(`  ✓ ${updated}/${rows.length} départements mis à jour`)
+  if (skipped.length) log(`  ⚠ Non-matchés : ${skipped.join(', ')}`)
 }
 
 // ── 3. Communes ──────────────────────────────────────────────────────────────
@@ -112,19 +146,36 @@ async function migrateCommunes() {
     'SELECT name, departement_id, region_id, ST_AsGeoJSON(geometry)::text AS geojson, superficie_km2, population, densite FROM communes'
   )
 
-  // map dept_id source → dept_id cible
+  // map dept_id source → dept_id cible (matching normalisé)
   const { rows: srcDepts } = await source.query('SELECT id, name FROM departements')
   const { rows: tgtDepts } = await target.query('SELECT id, name FROM departements')
   const deptIdMap = new Map()
   for (const sd of srcDepts) {
-    const td = tgtDepts.find((d) => d.name.toLowerCase() === sd.name.toLowerCase())
+    const td = tgtDepts.find((d) => normalize(d.name) === normalize(sd.name))
     if (td) deptIdMap.set(sd.id, td.id)
   }
 
+  // map (normalisé_name + dept_id_cible) → name réel cible
+  // Pour les communes, on indexe par norm_name seul d'abord, puis on affinera avec dept si ambigu
+  const { rows: tgtCommunesFull } = await target.query('SELECT id, name, departement_id FROM communes')
+  // Map: normalize(name) → [{ id, name, departement_id }]
+  const tgtCommuneNormMap = new Map()
+  for (const c of tgtCommunesFull) {
+    const key = normalize(c.name)
+    if (!tgtCommuneNormMap.has(key)) tgtCommuneNormMap.set(key, [])
+    tgtCommuneNormMap.get(key).push(c)
+  }
+
   let updated = 0
+  let skipped = []
   for (const row of rows) {
     if (!row.geojson) continue
+    const normKey = normalize(row.name)
+    const candidates = tgtCommuneNormMap.get(normKey)
+    if (!candidates || !candidates.length) { skipped.push(row.name); continue }
     const tgtDeptId = deptIdMap.get(row.departement_id) ?? null
+    // Choisir le candidat qui correspond au même département, sinon prendre le premier
+    const best = candidates.find((c) => c.departement_id === tgtDeptId) ?? candidates[0]
     const res = await target.query(
       `UPDATE communes
        SET geometry       = ST_SetSRID(ST_GeomFromGeoJSON($1), 4326),
@@ -132,31 +183,23 @@ async function migrateCommunes() {
            population     = $3,
            densite        = $4,
            region_id      = COALESCE(region_id, $5)
-       WHERE LOWER(name) = LOWER($6)
-         AND (departement_id = $7 OR $7 IS NULL)`,
-      [
-        row.geojson,
-        row.superficie_km2,
-        row.population,
-        row.densite,
-        row.region_id,
-        row.name,
-        tgtDeptId,
-      ]
+       WHERE id = $6`,
+      [row.geojson, row.superficie_km2, row.population, row.densite, row.region_id, best.id]
     )
     if (res.rowCount > 0) updated++
   }
   log(`  ✓ ${updated}/${rows.length} communes mises à jour`)
+  if (skipped.length) log(`  ⚠ Non-matchées (${skipped.length}) : ${skipped.slice(0, 20).join(', ')}${skipped.length > 20 ? '...' : ''}`)
 }
 
 // ── 4. Localités ─────────────────────────────────────────────────────────────
 async function migrateLocalites() {
   log('\n=== Localités (par lots de 500) ===')
 
-  // Construire une map commune_name (lower) → commune_id cible en une seule requête
-  const { rows: tgtCommunes } = await target.query('SELECT id, LOWER(name) AS lname FROM communes')
+  // Construire une map commune_name normalisée → commune_id cible
+  const { rows: tgtCommunes } = await target.query('SELECT id, name FROM communes')
   const communeMap = new Map()
-  for (const c of tgtCommunes) communeMap.set(c.lname, c.id)
+  for (const c of tgtCommunes) communeMap.set(normalize(c.name), c.id)
 
   const total = parseInt((await source.query('SELECT COUNT(*) AS n FROM localites')).rows[0].n, 10)
   const BATCH = 500
@@ -178,9 +221,9 @@ async function migrateLocalites() {
       [BATCH, offset]
     )
 
-    // Séparer les lignes avec et sans géométrie
-    const withGeom = rows.filter((r) => r.geojson && communeMap.has(r.commune_lname))
-    const withoutGeom = rows.filter((r) => !r.geojson && communeMap.has(r.commune_lname))
+    // Séparer les lignes avec et sans géométrie (matching normalisé sur commune)
+    const withGeom = rows.filter((r) => r.geojson && communeMap.has(normalize(r.commune_lname)))
+    const withoutGeom = rows.filter((r) => !r.geojson && communeMap.has(normalize(r.commune_lname)))
 
     if (withGeom.length > 0) {
       // Batch update avec géométrie via UNNEST
@@ -216,7 +259,7 @@ async function migrateLocalites() {
            AND LOWER(t.name) = v.lname_loc`,
         [
           withGeom.map((r) => r.commune_lname),
-          withGeom.map((r) => communeMap.get(r.commune_lname)),
+          withGeom.map((r) => communeMap.get(normalize(r.commune_lname))),
           withGeom.map((r) => r.name.toLowerCase()),
           withGeom.map((r) => r.geojson),
           withGeom.map((r) => r.lat?.toString() ?? null),
@@ -262,7 +305,7 @@ async function migrateLocalites() {
          WHERE t.commune_id = v.commune_id
            AND LOWER(t.name) = v.lname_loc`,
         [
-          withoutGeom.map((r) => communeMap.get(r.commune_lname)),
+          withoutGeom.map((r) => communeMap.get(normalize(r.commune_lname))),
           withoutGeom.map((r) => r.name.toLowerCase()),
           withoutGeom.map((r) => r.lat?.toString() ?? null),
           withoutGeom.map((r) => r.lon?.toString() ?? null),
