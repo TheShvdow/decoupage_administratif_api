@@ -1,4 +1,4 @@
-# SenGeoMpa API 🇸🇳
+# SenGeoMap API 🇸🇳
 
 API REST géospatiale du Sénégal construite avec **AdonisJS v5 (TypeScript)**, **PostgreSQL + PostGIS** et les données de population du **recensement ANSD 2023**.
 
@@ -43,7 +43,22 @@ Les densités (`densite`, hab/km²) sont calculées à partir de `population` / 
 
 ---
 
-## 🗄️ Schéma de la base
+## � Sources des données
+
+| Donnée | Source | Détail |
+|--------|--------|--------|
+| Découpage administratif (régions, départements, communes) | [decoupage_administratif_api](https://github.com/TheShvdow/decoupage_administratif_api) | Hiérarchie, codes, coordonnées GPS, altitudes |
+| Polygones administratifs (frontières) | [GADM](https://gadm.org/download_country.html) — Sénégal | Niveaux 0 (pays), 1 (régions), 2 (départements), 3 (communes) — format GeoJSON |
+| Polygones des localités | Diagrammes de Voronoï générés par PostGIS | Calculés à partir des coordonnées GPS des 25 515 localités |
+| Population (régions, départements, communes) | [ANSD](https://www.ansd.sn/) — RGPH 2023 | Recensement Général de la Population et de l'Habitat 2023 |
+| Population des localités | [ANSD](https://www.ansd.sn/) — RGPH 2023 | Données désagrégées par localité |
+| Superficie (km²) | Calculée par PostGIS | `ST_Area(geometry::geography) / 1e6` à partir des polygones |
+| Densité (hab/km²) | Calculée | `population / superficie_km2` |
+| Coordonnées GPS des localités | [data.gouv.sn](https://data.gouv.sn/) / collecte terrain | Latitude, longitude, altitude |
+
+---
+
+## �🗄️ Schéma de la base
 
 ```sql
 -- Toutes les entités géographiques utilisent le même type
@@ -81,8 +96,8 @@ Les index PostGIS (`GIST`) et trigrammes (`pg_trgm`) sont créés automatiquemen
 
 ```bash
 # Cloner le projet
-git clone https://github.com/taphacoobams/sengeompa.git
-cd sengeompa
+git clone https://github.com/taphacoobams/sengeomap.git
+cd sengeomap
 
 # Installer les dépendances
 pnpm install
@@ -301,8 +316,8 @@ pnpm run test
 ### 1. Fork & Clone
 
 ```bash
-git clone https://github.com/<ton-username>/sengeompa.git
-cd sengeompa
+git clone https://github.com/<ton-username>/sengeomap.git
+cd sengeomap
 pnpm install
 ```
 
@@ -329,7 +344,7 @@ pnpm run test
 
 ### 5. Signaler un bug
 
-Ouvre une [issue GitHub](https://github.com/taphacoobams/sengeompa/issues) avec le comportement observé, attendu, et les étapes pour reproduire.
+Ouvre une [issue GitHub](https://github.com/taphacoobams/sengeomap/issues) avec le comportement observé, attendu, et les étapes pour reproduire.
 
 ---
 
