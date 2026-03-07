@@ -22,8 +22,10 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async () => {
   return {
-    welcome:
-      "Bienvenu dans l'API du Découpage administratif du Sénégal. Cette API recense l'ensemble des Régions, Départements et Communes du pays pour faciliter l'intégration dans vos applications. Pour plus d'informations, rendez-vous sur https://github.com/Theshvdow/DecoupageAdministratifSenegalApi",
+    name: 'SenGeoMpa API',
+    description:
+      "API géospatiale du Sénégal — découpage administratif, polygones PostGIS, population ANSD 2023 et GeoJSON pour vos cartes. Documentation : /docs",
+    version: '1.0.0',
   }
 })
 
