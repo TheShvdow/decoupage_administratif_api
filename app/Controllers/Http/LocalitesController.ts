@@ -62,7 +62,7 @@ export default class LocalitesController {
     const pageRaw = request.input('page')
     const limit = Math.min(Number(request.input('limit', 100)), 200)
 
-    const query = Localite.query().orderBy('name', 'asc')
+    const query = Localite.query().orderBy('name', 'asc').orderBy('id', 'asc')
 
     if (communeId !== null) query.where('commune_id', communeId)
     if (departementId !== null) query.where('departement_id', departementId)

@@ -25,7 +25,7 @@ export default class Commune extends BaseModel {
   @column()
   declare public elevation: number | null
 
-  @column()
+  @column({ serializeAs: null })
   declare public geometry: object | null
 
   @column()
