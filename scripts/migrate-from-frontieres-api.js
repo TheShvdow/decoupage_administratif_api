@@ -17,7 +17,15 @@
  *   SOURCE_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/frontieres_db  (source)
  */
 
-require('dotenv').config()
+// Lecture manuelle du .env (pas de dépendance dotenv requise)
+const fs = require('fs')
+const envPath = require('path').join(__dirname, '../.env')
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+    const m = line.match(/^([^#=]+)=(.*)$/)
+    if (m) process.env[m[1].trim()] = m[2].trim()
+  }
+}
 const { Pool } = require('pg')
 
 const SOURCE_URL =
@@ -143,20 +151,25 @@ async function migrateCommunes() {
 
 // ── 4. Localités ─────────────────────────────────────────────────────────────
 async function migrateLocalites() {
-  log('\n=== Localités (par lots de 1000) ===')
-  const total = (await source.query('SELECT COUNT(*) AS n FROM localites')).rows[0].n
-  const BATCH = 1000
+  log('\n=== Localités (par lots de 500) ===')
+
+  // Construire une map commune_name (lower) → commune_id cible en une seule requête
+  const { rows: tgtCommunes } = await target.query('SELECT id, LOWER(name) AS lname FROM communes')
+  const communeMap = new Map()
+  for (const c of tgtCommunes) communeMap.set(c.lname, c.id)
+
+  const total = parseInt((await source.query('SELECT COUNT(*) AS n FROM localites')).rows[0].n, 10)
+  const BATCH = 500
   let offset = 0
   let updated = 0
 
   while (offset < total) {
     const { rows } = await source.query(
-      `SELECT l.id, l.name, l.commune_id, l.departement_id, l.region_id,
-              l.lat, l.lon, l.elevation,
+      `SELECT l.name, l.lat, l.lon, l.elevation,
               l.superficie_km2, l.population, l.densite,
-              l.normalized_name,
+              l.normalized_name, l.departement_id, l.region_id,
               ST_AsGeoJSON(l.geometry)::text AS geojson,
-              c.name AS commune_name
+              LOWER(c.name) AS commune_lname
        FROM localites l
        LEFT JOIN communes c ON c.id = l.commune_id
        WHERE l.name IS NOT NULL
@@ -165,52 +178,110 @@ async function migrateLocalites() {
       [BATCH, offset]
     )
 
-    for (const row of rows) {
-      // Chercher la commune cible par nom
-      if (!row.commune_name) continue
-      const { rows: tc } = await target.query(
-        'SELECT id FROM communes WHERE LOWER(name) = LOWER($1) LIMIT 1',
-        [row.commune_name]
-      )
-      if (!tc.length) continue
-      const tgtCommuneId = tc[0].id
+    // Séparer les lignes avec et sans géométrie
+    const withGeom = rows.filter((r) => r.geojson && communeMap.has(r.commune_lname))
+    const withoutGeom = rows.filter((r) => !r.geojson && communeMap.has(r.commune_lname))
 
+    if (withGeom.length > 0) {
+      // Batch update avec géométrie via UNNEST
       await target.query(
-        `UPDATE localites
-         SET geometry        = CASE WHEN $1 IS NOT NULL THEN ST_SetSRID(ST_GeomFromGeoJSON($1), 4326) ELSE geometry END,
-             lat             = COALESCE(lat, $2),
-             lon             = COALESCE(lon, $3),
-             elevation       = COALESCE(elevation, $4),
-             superficie_km2  = COALESCE(superficie_km2, $5),
-             population      = COALESCE(population, $6),
-             densite         = COALESCE(densite, $7),
-             normalized_name = COALESCE(normalized_name, $8),
-             departement_id  = COALESCE(departement_id, $9),
-             region_id       = COALESCE(region_id, $10)
-         WHERE commune_id = $11
-           AND LOWER(name) = LOWER($12)`,
+        `UPDATE localites AS t
+         SET geometry        = ST_SetSRID(ST_GeomFromGeoJSON(v.geojson), 4326),
+             lat             = COALESCE(t.lat, v.lat::double precision),
+             lon             = COALESCE(t.lon, v.lon::double precision),
+             elevation       = COALESCE(t.elevation, v.elevation::double precision),
+             superficie_km2  = COALESCE(t.superficie_km2, v.superficie_km2::double precision),
+             population      = COALESCE(t.population, v.population::integer),
+             densite         = COALESCE(t.densite, v.densite::double precision),
+             normalized_name = COALESCE(t.normalized_name, v.normalized_name),
+             departement_id  = COALESCE(t.departement_id, v.dept_id::integer),
+             region_id       = COALESCE(t.region_id, v.reg_id::integer)
+         FROM (
+           SELECT
+             UNNEST($1::text[])    AS lname,
+             UNNEST($2::integer[]) AS commune_id,
+             UNNEST($3::text[])    AS lname_loc,
+             UNNEST($4::text[])    AS geojson,
+             UNNEST($5::text[])    AS lat,
+             UNNEST($6::text[])    AS lon,
+             UNNEST($7::text[])    AS elevation,
+             UNNEST($8::text[])    AS superficie_km2,
+             UNNEST($9::text[])    AS population,
+             UNNEST($10::text[])   AS densite,
+             UNNEST($11::text[])   AS normalized_name,
+             UNNEST($12::text[])   AS dept_id,
+             UNNEST($13::text[])   AS reg_id
+         ) AS v
+         WHERE t.commune_id = v.commune_id
+           AND LOWER(t.name) = v.lname_loc`,
         [
-          row.geojson,
-          row.lat,
-          row.lon,
-          row.elevation,
-          row.superficie_km2,
-          row.population,
-          row.densite,
-          row.normalized_name,
-          row.departement_id,
-          row.region_id,
-          tgtCommuneId,
-          row.name,
+          withGeom.map((r) => r.commune_lname),
+          withGeom.map((r) => communeMap.get(r.commune_lname)),
+          withGeom.map((r) => r.name.toLowerCase()),
+          withGeom.map((r) => r.geojson),
+          withGeom.map((r) => r.lat?.toString() ?? null),
+          withGeom.map((r) => r.lon?.toString() ?? null),
+          withGeom.map((r) => r.elevation?.toString() ?? null),
+          withGeom.map((r) => r.superficie_km2?.toString() ?? null),
+          withGeom.map((r) => r.population?.toString() ?? null),
+          withGeom.map((r) => r.densite?.toString() ?? null),
+          withGeom.map((r) => r.normalized_name ?? null),
+          withGeom.map((r) => r.departement_id?.toString() ?? null),
+          withGeom.map((r) => r.region_id?.toString() ?? null),
         ]
       )
-      updated++
+      updated += withGeom.length
+    }
+
+    if (withoutGeom.length > 0) {
+      await target.query(
+        `UPDATE localites AS t
+         SET lat             = COALESCE(t.lat, v.lat::double precision),
+             lon             = COALESCE(t.lon, v.lon::double precision),
+             elevation       = COALESCE(t.elevation, v.elevation::double precision),
+             superficie_km2  = COALESCE(t.superficie_km2, v.superficie_km2::double precision),
+             population      = COALESCE(t.population, v.population::integer),
+             densite         = COALESCE(t.densite, v.densite::double precision),
+             normalized_name = COALESCE(t.normalized_name, v.normalized_name),
+             departement_id  = COALESCE(t.departement_id, v.dept_id::integer),
+             region_id       = COALESCE(t.region_id, v.reg_id::integer)
+         FROM (
+           SELECT
+             UNNEST($1::integer[]) AS commune_id,
+             UNNEST($2::text[])    AS lname_loc,
+             UNNEST($3::text[])    AS lat,
+             UNNEST($4::text[])    AS lon,
+             UNNEST($5::text[])    AS elevation,
+             UNNEST($6::text[])    AS superficie_km2,
+             UNNEST($7::text[])    AS population,
+             UNNEST($8::text[])    AS densite,
+             UNNEST($9::text[])    AS normalized_name,
+             UNNEST($10::text[])   AS dept_id,
+             UNNEST($11::text[])   AS reg_id
+         ) AS v
+         WHERE t.commune_id = v.commune_id
+           AND LOWER(t.name) = v.lname_loc`,
+        [
+          withoutGeom.map((r) => communeMap.get(r.commune_lname)),
+          withoutGeom.map((r) => r.name.toLowerCase()),
+          withoutGeom.map((r) => r.lat?.toString() ?? null),
+          withoutGeom.map((r) => r.lon?.toString() ?? null),
+          withoutGeom.map((r) => r.elevation?.toString() ?? null),
+          withoutGeom.map((r) => r.superficie_km2?.toString() ?? null),
+          withoutGeom.map((r) => r.population?.toString() ?? null),
+          withoutGeom.map((r) => r.densite?.toString() ?? null),
+          withoutGeom.map((r) => r.normalized_name ?? null),
+          withoutGeom.map((r) => r.departement_id?.toString() ?? null),
+          withoutGeom.map((r) => r.region_id?.toString() ?? null),
+        ]
+      )
+      updated += withoutGeom.length
     }
 
     offset += BATCH
     process.stdout.write(`  [${Math.min(offset, total)}/${total}]\r`)
   }
-  log(`\n  ✓ ${updated} localités mises à jour`)
+  log(`\n  ✓ ${updated} localités traitées`)
 }
 
 // ── 5. Pays ──────────────────────────────────────────────────────────────────
