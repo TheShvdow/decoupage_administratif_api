@@ -35,7 +35,7 @@ const databaseConfig: DatabaseConfig = {
     */
     pg: {
       client: 'pg',
-      connection: Env.get('DATABASE_URL'),
+      connection: Env.get('DATABASE_URL') as any,
       migrations: {
         naturalSort: true,
       },

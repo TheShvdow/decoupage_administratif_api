@@ -1,25 +1,14 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
-import Departement from './Departement'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Region extends BaseModel {
+export default class Pays extends BaseModel {
+  public static table = 'pays'
+
   @column({ isPrimary: true })
   declare public id: number
 
   @column()
   declare public name: string
-
-  @column()
-  declare public code: string
-
-  @column()
-  declare public lat: number | null
-
-  @column()
-  declare public lon: number | null
-
-  @column()
-  declare public elevation: number | null
 
   @column()
   declare public geometry: object | null
@@ -38,7 +27,4 @@ export default class Region extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   declare public updatedAt: DateTime
-
-  @hasMany(() => Departement)
-  declare public departements: HasMany<typeof Departement>
 }

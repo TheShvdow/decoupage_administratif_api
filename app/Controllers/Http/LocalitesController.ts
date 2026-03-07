@@ -41,39 +41,39 @@ export default class LocalitesController {
    *         description: Liste des localites
    */
   public async index({ request, response }: HttpContextContract) {
-    const communeIdRaw = request.input('commune_id')
-    let communeId: number | null = null
-
-    // Validation du paramètre commune_id
-    if (communeIdRaw !== null && communeIdRaw !== undefined && communeIdRaw !== '') {
-      communeId = Number(communeIdRaw)
-
-      if (isNaN(communeId) || communeId <= 0 || !Number.isInteger(communeId)) {
-        return response.badRequest(
-          ApiResponse.error("Le paramètre 'commune_id' doit être un entier positif.")
-        )
-      }
+    const validateIntParam = (raw: string | null, _name?: string): number | null | false => {
+      if (raw === null || raw === undefined || raw === '') return null
+      const val = Number(raw)
+      if (isNaN(val) || val <= 0 || !Number.isInteger(val)) return false
+      return val
     }
+
+    const communeId = validateIntParam(request.input('commune_id'), 'commune_id')
+    const departementId = validateIntParam(request.input('departement_id'), 'departement_id')
+    const regionId = validateIntParam(request.input('region_id'), 'region_id')
+
+    if (communeId === false)
+      return response.badRequest(ApiResponse.error("Le paramètre 'commune_id' doit être un entier positif."))
+    if (departementId === false)
+      return response.badRequest(ApiResponse.error("Le paramètre 'departement_id' doit être un entier positif."))
+    if (regionId === false)
+      return response.badRequest(ApiResponse.error("Le paramètre 'region_id' doit être un entier positif."))
 
     const pageRaw = request.input('page')
     const limit = Math.min(Number(request.input('limit', 100)), 200)
 
-    // Requête de base triée par nom pour garder un ordre stable
     const query = Localite.query().orderBy('name', 'asc')
 
-    // Filtre par commune si le paramètre est présent
-    if (communeId !== null) {
-      query.where('commune_id', communeId)
-    }
+    if (communeId !== null) query.where('commune_id', communeId)
+    if (departementId !== null) query.where('departement_id', departementId)
+    if (regionId !== null) query.where('region_id', regionId)
 
-    // Pagination si ?page est présent
     if (pageRaw) {
       const page = Math.max(1, Number(pageRaw))
       const paginated = await query.paginate(page, limit)
       return ApiResponse.success(paginated.toJSON())
     }
 
-    // Sinon retourner toutes les localites
     const localites = await query
     return ApiResponse.success(localites)
   }

@@ -25,6 +25,18 @@ export default class Departement extends BaseModel {
   @column()
   declare public elevation: number | null
 
+  @column()
+  declare public geometry: object | null
+
+  @column()
+  declare public superficieKm2: number | null
+
+  @column()
+  declare public population: number | null
+
+  @column()
+  declare public densite: number | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

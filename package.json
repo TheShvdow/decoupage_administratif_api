@@ -8,7 +8,8 @@
     "start": "node server.js",
     "test": "node ace test",
     "lint": "eslint . --ext=.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "migrate-geo": "node scripts/migrate-from-frontieres-api.js"
   },
   "eslintConfig": {
     "extends": [

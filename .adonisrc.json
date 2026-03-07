@@ -31,7 +31,7 @@
         "files": [
           "tests/functional/**/*.spec(.ts|.js)"
         ],
-        "timeout": 60000
+        "timeout": 180000
       }
     ]
   },

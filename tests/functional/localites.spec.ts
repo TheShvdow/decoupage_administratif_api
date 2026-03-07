@@ -8,6 +8,7 @@ test.group('Localites', (group) => {
   })
 
   test('GET /api/v1/localites - should return list of all localites only', async ({ client }) => {
+    // @ts-ignore — timeout étendu : 25k lignes depuis Neon peut dépasser 60s
     const response = await client.get('/api/v1/localites')
 
     response.assertStatus(200)
