@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: decoupage-administratif-api
+    name: sengeomap
     runtime: node
     region: frankfurt
     plan: free
@@ -16,7 +16,7 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: APP_NAME
-        value: decoupage_administratif_api
+        value: sengeomap
       - key: DRIVE_DISK
         value: local
       - key: DB_CONNECTION
