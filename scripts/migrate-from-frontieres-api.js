@@ -347,6 +347,20 @@ async function migratePays() {
   log(`  ✓ Pays inséré : ${row.name} — ${row.population} hab, ${row.superficie_km2?.toFixed(0)} km²`)
 }
 
+// ── 6. Recalcul lat/lon depuis les centroïdes PostGIS ─────────────────────────
+async function computeLatLonFromGeometry() {
+  log('\n=== Recalcul lat/lon depuis geometry (centroïdes) ===')
+  for (const tbl of ['regions', 'departements', 'communes', 'localites']) {
+    const res = await target.query(
+      `UPDATE ${tbl}
+       SET lat = ST_Y(ST_Centroid(geometry)),
+           lon = ST_X(ST_Centroid(geometry))
+       WHERE geometry IS NOT NULL AND lat IS NULL`
+    )
+    if (res.rowCount > 0) log(`  ✓ ${tbl} : ${res.rowCount} lat/lon calculés`)
+  }
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   log('╔════════════════════════════════════════════════╗')
@@ -359,6 +373,7 @@ async function main() {
     await migrateCommunes()
     await migrateLocalites()
     await migratePays()
+    await computeLatLonFromGeometry()
     log('\n✅ Migration terminée avec succès.')
   } catch (err) {
     log(`\n❌ Erreur : ${err.message}`)
