@@ -39,6 +39,27 @@ const options: swaggerJsdoc.Options = {
               description: 'Code court de la région',
               example: 'DK',
             },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 15,
+            },
             created_at: {
               type: 'string',
               format: 'date-time',
@@ -68,6 +89,27 @@ const options: swaggerJsdoc.Options = {
               type: 'string',
               description: 'Code court de la région',
               example: 'DK',
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 15,
             },
             departements: {
               type: 'array',
@@ -101,10 +143,37 @@ const options: swaggerJsdoc.Options = {
               description: 'Nom du département',
               example: 'Dakar',
             },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code administratif du département',
+              example: 'DK',
+            },
             region_id: {
               type: 'integer',
               description: 'Identifiant de la région parent',
               example: 1,
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 31,
             },
             created_at: {
               type: 'string',
@@ -131,10 +200,37 @@ const options: swaggerJsdoc.Options = {
               description: 'Nom du département',
               example: 'Dakar',
             },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code administratif du département',
+              example: 'DK',
+            },
             region_id: {
               type: 'integer',
               description: 'Identifiant de la région parent',
               example: 1,
+            },
+            lat: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Latitude GPS',
+              example: 14.6928,
+            },
+            lon: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Longitude GPS',
+              example: -17.4467,
+            },
+            elevation: {
+              type: 'number',
+              format: 'double',
+              nullable: true,
+              description: 'Altitude en mètres',
+              example: 31,
             },
             communes: {
               type: 'array',
@@ -172,6 +268,12 @@ const options: swaggerJsdoc.Options = {
               type: 'integer',
               description: 'Identifiant du département parent',
               example: 1,
+            },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code unique de la commune (code département + numéro séquentiel)',
+              example: 'DK03',
             },
             lat: {
               type: 'number',
@@ -220,6 +322,12 @@ const options: swaggerJsdoc.Options = {
               type: 'integer',
               description: 'Identifiant du département parent',
               example: 1,
+            },
+            code: {
+              type: 'string',
+              nullable: true,
+              description: 'Code unique de la commune (code département + numéro séquentiel)',
+              example: 'DK03',
             },
             lat: {
               type: 'number',
@@ -272,6 +380,84 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        Localite: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'Identifiant unique de la localité',
+              example: 1,
+            },
+            name: {
+              type: 'string',
+              description: 'Nom de la localité',
+              example: 'Keur Moussa',
+            },
+            commune_id: {
+              type: 'integer',
+              description: 'Identifiant de la commune parent',
+              example: 1,
+            },
+          },
+        },
+        LocaliteWithHierarchy: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'Identifiant unique de la localité',
+              example: 1,
+            },
+            name: {
+              type: 'string',
+              description: 'Nom de la localité',
+              example: 'Keur Moussa',
+            },
+            commune_id: {
+              type: 'integer',
+              description: 'Identifiant de la commune parent',
+              example: 1,
+            },
+            commune: {
+              type: 'object',
+              description: 'Commune parent',
+              properties: {
+                id: {
+                  type: 'integer',
+                  example: 1,
+                },
+                name: {
+                  type: 'string',
+                  example: 'Dakar Plateau',
+                },
+                departement_id: {
+                  type: 'integer',
+                  example: 1,
+                },
+                departement: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'integer',
+                      example: 1,
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'Dakar',
+                    },
+                    region_id: {
+                      type: 'integer',
+                      example: 1,
+                    },
+                    region: {
+                      $ref: '#/components/schemas/Region',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         SearchResults: {
           type: 'object',
           properties: {
@@ -292,6 +478,10 @@ const options: swaggerJsdoc.Options = {
                   type: 'array',
                   items: { $ref: '#/components/schemas/Commune' },
                 },
+                localites: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Localite' },
+                },
               },
             },
           },
@@ -302,6 +492,7 @@ const options: swaggerJsdoc.Options = {
             regions: { type: 'integer', example: 14 },
             departements: { type: 'integer', example: 46 },
             communes: { type: 'integer', example: 549 },
+            localites: { type: 'integer', example: 0 },
           },
         },
         SuccessResponse: {

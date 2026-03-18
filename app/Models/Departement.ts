@@ -13,6 +13,30 @@ export default class Departement extends BaseModel {
   @column()
   declare public regionId: number
 
+  @column()
+  declare public code: string | null
+
+  @column()
+  declare public lat: number | null
+
+  @column()
+  declare public lon: number | null
+
+  @column()
+  declare public elevation: number | null
+
+  @column({ serializeAs: null })
+  declare public geometry: object | null
+
+  @column()
+  declare public superficieKm2: number | null
+
+  @column()
+  declare public population: number | null
+
+  @column()
+  declare public densite: number | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 

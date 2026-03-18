@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
-import Departement from './Departement'
+import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import Commune from './Commune'
 
-export default class Region extends BaseModel {
+export default class Localite extends BaseModel {
   @column({ isPrimary: true })
   declare public id: number
 
@@ -10,7 +10,13 @@ export default class Region extends BaseModel {
   declare public name: string
 
   @column()
-  declare public code: string
+  declare public communeId: number
+
+  @column()
+  declare public departementId: number | null
+
+  @column()
+  declare public regionId: number | null
 
   @column()
   declare public lat: number | null
@@ -33,12 +39,15 @@ export default class Region extends BaseModel {
   @column()
   declare public densite: number | null
 
+  @column()
+  declare public normalizedName: string | null
+
   @column.dateTime({ autoCreate: true, serializeAs: null })
   declare public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   declare public updatedAt: DateTime
 
-  @hasMany(() => Departement)
-  declare public departements: HasMany<typeof Departement>
+  @belongsTo(() => Commune)
+  declare public commune: BelongsTo<typeof Commune>
 }

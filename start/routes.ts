@@ -22,8 +22,10 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async () => {
   return {
-    welcome:
-      "Bienvenu dans l'API du Découpage administratif du Sénégal. Cette API recense l'ensemble des Régions, Départements et Communes du pays pour faciliter l'intégration dans vos applications. Pour plus d'informations, rendez-vous sur https://github.com/Theshvdow/DecoupageAdministratifSenegalApi",
+    name: 'SenGeoMap API',
+    description:
+      "API géospatiale du Sénégal — découpage administratif, polygones PostGIS, population ANSD 2023 et GeoJSON pour vos cartes. Documentation : /docs",
+    version: '1.0.0',
   }
 })
 
@@ -41,22 +43,37 @@ Route.get('/docs', 'DocsController.redoc') // Documentation Redoc
 Route.get('/api/openapi.json', 'DocsController.spec') // Spécification OpenAPI
 
 Route.group(() => {
-  // Routes Régions
-  Route.get('/regions', 'RegionsController.index') // Liste toutes les régions seulement
-  Route.get('/regions/:id', 'RegionsController.show').middleware('validateId') // Région + départements (sans communes)
-  Route.get('/regions/:regionId/departements', 'RegionsController.departements').middleware('validateId:regionId') // Départements d'une région
-  Route.get('/regions/:regionId/departements/:departementId', 'RegionsController.showDepartement').middleware('validateId:regionId,departementId') // Région + département + communes
+  // ── Pays ────────────────────────────────────────────────────────
+  Route.get('/pays', 'PaysController.index')
 
-  // Routes Départements
-  Route.get('/departements', 'DepartementsController.index') // Liste tous les départements (filtre ?region_id= optionnel)
-  Route.get('/departements/:id', 'DepartementsController.show').middleware('validateId') // Département + ses communes
-  Route.get('/departements/:id/communes', 'DepartementsController.communes').middleware('validateId') // Communes d'un département
+  // ── Régions ─────────────────────────────────────────────────────
+  Route.get('/regions', 'RegionsController.index')
+  Route.get('/regions/:id', 'RegionsController.show').middleware('validateId')
+  Route.get('/regions/:regionId/departements', 'RegionsController.departements').middleware('validateId:regionId')
+  Route.get('/regions/:regionId/departements/:departementId', 'RegionsController.showDepartement').middleware('validateId:regionId,departementId')
 
-  // Routes Communes
-  Route.get('/communes', 'CommunesController.index') // Liste toutes les communes (filtre ?departement_id= optionnel)
-  Route.get('/communes/:id', 'CommunesController.show').middleware('validateId') // Commune + département + région
+  // ── Départements ────────────────────────────────────────────────
+  Route.get('/departements', 'DepartementsController.index')
+  Route.get('/departements/:id', 'DepartementsController.show').middleware('validateId')
+  Route.get('/departements/:id/communes', 'DepartementsController.communes').middleware('validateId')
 
-  // Recherche & Statistiques
-  Route.get('/search', 'SearchController.index') // Recherche par nom dans régions/départements/communes
-  Route.get('/stats', 'StatsController.index') // Statistiques globales
+  // ── Communes ────────────────────────────────────────────────────
+  Route.get('/communes', 'CommunesController.index')
+  Route.get('/communes/:id', 'CommunesController.show').middleware('validateId')
+  Route.get('/communes/:id/localites', 'CommunesController.localites').middleware('validateId')
+
+  // ── Localités ───────────────────────────────────────────────────
+  Route.get('/localites', 'LocalitesController.index')
+  Route.get('/localites/:id', 'LocalitesController.show').middleware('validateId')
+
+  // ── Recherche & Statistiques ────────────────────────────────────
+  Route.get('/search', 'SearchController.index')
+  Route.get('/stats', 'StatsController.index')
+
+  // ── Map (GeoJSON) ────────────────────────────────────────────────
+  Route.get('/map/pays', 'PaysController.mapFeature')
+  Route.get('/map/regions', 'MapController.regions')
+  Route.get('/map/departements', 'MapController.departements')
+  Route.get('/map/communes', 'MapController.communes')
+  Route.get('/map/localites', 'MapController.localites')
 }).prefix('/api/v1')

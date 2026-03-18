@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Commune from 'App/Models/Commune'
+import Localite from 'App/Models/Localite'
 import ApiResponse from 'App/Utils/ApiResponse'
 
 export default class CommunesController {
@@ -130,5 +131,51 @@ export default class CommunesController {
       .firstOrFail()
 
     return ApiResponse.success(commune)
+  }
+
+  /**
+   * @swagger
+   * /api/v1/communes/{id}/localites:
+   *   get:
+   *     tags:
+   *       - Communes
+   *     summary: Liste des localités d'une commune
+   *     description: Retourne toutes les localités d'une commune spécifique
+   *     parameters:
+   *       - name: id
+   *         in: path
+   *         required: true
+   *         description: Identifiant de la commune
+   *         schema:
+   *           type: number
+   *           example: 1
+   *     responses:
+   *       200:
+   *         description: Liste des localités
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Succès
+   *                 data:
+   *                   type: array
+   *                   items:
+   *                     $ref: '#/components/schemas/Localite'
+   *       404:
+   *         $ref: '#/components/responses/NotFound'
+   */
+  public async localites({ params }: HttpContextContract) {
+    const commune = await Commune.findOrFail(params.id)
+    const localites = await Localite.query()
+      .where('commune_id', commune.id)
+      .orderBy('name', 'asc')
+
+    return ApiResponse.success(localites)  
   }
 }

@@ -8,34 +8,25 @@
 import Env from '@ioc:Adonis/Core/Env'
 import type { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
 
+function parseDatabaseUrl(url: string) {
+  const parsed = new URL(url)
+  return {
+    host: parsed.hostname,
+    port: Number(parsed.port) || 5432,
+    user: decodeURIComponent(parsed.username),
+    password: decodeURIComponent(parsed.password),
+    database: parsed.pathname.replace(/^\//, ''),
+    ssl: { rejectUnauthorized: false },
+  }
+}
+
 const databaseConfig: DatabaseConfig = {
-  /*
-  |--------------------------------------------------------------------------
-  | Connection
-  |--------------------------------------------------------------------------
-  |
-  | The primary connection for making database queries across the application
-  | You can use any key from the `connections` object defined in this same
-  | file.
-  |
-  */
   connection: Env.get('DB_CONNECTION'),
 
   connections: {
-    /*
-    |--------------------------------------------------------------------------
-    | PostgreSQL config
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for PostgreSQL database. Make sure to install the driver
-    | from npm when using this connection
-    |
-    | npm i pg
-    |
-    */
     pg: {
       client: 'pg',
-      connection: Env.get('DATABASE_URL'),
+      connection: parseDatabaseUrl(Env.get('DATABASE_URL')),
       migrations: {
         naturalSort: true,
       },

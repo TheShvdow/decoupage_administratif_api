@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Region from 'App/Models/Region'
 import Departement from 'App/Models/Departement'
 import Commune from 'App/Models/Commune'
+import Localite from 'App/Models/Localite'
 import ApiResponse from 'App/Utils/ApiResponse'
 
 export default class SearchController {
@@ -31,7 +32,7 @@ export default class SearchController {
    *         description: "Type d'entité à rechercher : region, departement ou commune"
    *         schema:
    *           type: string
-   *           enum: [region, departement, commune]
+   *           enum: [region, departement, commune, localite]
    *     responses:
    *       200:
    *         description: Résultats de la recherche
@@ -95,8 +96,20 @@ export default class SearchController {
       return ApiResponse.success({ query: q, total: communes.length, results: { communes } })
     }
 
+    if (type === 'localite') {
+      const localites = await Localite.query()
+        .whereILike('name', searchTerm)
+        .preload('commune', (communeQuery) => {
+          communeQuery.preload('departement', (deptQuery) => {
+            deptQuery.preload('region')
+          })
+        })
+        .orderBy('name', 'asc')
+      return ApiResponse.success({ query: q, total: localites.length, results: { localites } })
+    }
+
     // Sans filtre de type : recherche dans toutes les entités
-    const [regions, departements, communes] = await Promise.all([
+    const [regions, departements, communes, localites] = await Promise.all([
       Region.query()
         .whereILike('name', searchTerm)
         .preload('departements', (deptQuery) => {
@@ -117,12 +130,20 @@ export default class SearchController {
           deptQuery.preload('region')
         })
         .orderBy('name', 'asc'),
+      Localite.query()
+        .whereILike('name', searchTerm)
+        .preload('commune', (communeQuery) => {
+          communeQuery.preload('departement', (deptQuery) => {
+            deptQuery.preload('region')
+          })
+        })
+        .orderBy('name', 'asc'),
     ])
 
     return ApiResponse.success({
       query: q,
-      total: regions.length + departements.length + communes.length,
-      results: { regions, departements, communes },
+      total: regions.length + departements.length + communes.length + localites.length,
+      results: { regions, departements, communes, localites },
     })
   }
 }

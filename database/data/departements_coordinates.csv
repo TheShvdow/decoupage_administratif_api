@@ -1,0 +1,47 @@
+X,Y,GID_2,GID_0,COUNTRY,GID_1,NAME_1,NL_NAME_1,NAME_2,VARNAME_2,NL_NAME_2,TYPE_2,ENGTYPE_2,CC_2,HASC_2
+-17.4467,14.6928,SEN.1.1_1,SEN,Senegal,SEN.1_1,Dakar,NA,Dakar,,NA,Département,Department,,SN.DK.DK
+-17.3941,14.7763,SEN.1.2_1,SEN,Senegal,SEN.1_1,Dakar,NA,Guédiawaye,,NA,Département,Department,,SN.DK.GW
+-17.3100,14.7900,SEN.1.3_1,SEN,Senegal,SEN.1_1,Dakar,NA,Keur Massar,,NA,Département,Department,,SN.DK.KM
+-17.3900,14.7500,SEN.1.4_1,SEN,Senegal,SEN.1_1,Dakar,NA,Pikine,,NA,Département,Department,,SN.DK.PK
+-17.2667,14.7167,SEN.1.5_1,SEN,Senegal,SEN.1_1,Dakar,NA,Rufisque,,NA,Département,Department,,SN.DK.RF
+-16.4500,14.4167,SEN.2.1_1,SEN,Senegal,SEN.2_1,Diourbel,NA,Bambey,,NA,Département,Department,,SN.DB.BB
+-14.6553,14.6553,SEN.2.2_1,SEN,Senegal,SEN.2_1,Diourbel,NA,Diourbel,,NA,Département,Department,,SN.DB.DB
+-15.9000,14.7833,SEN.2.3_1,SEN,Senegal,SEN.2_1,Diourbel,NA,Mbacké,,NA,Département,Department,,SN.DB.MB
+-16.4000,14.3333,SEN.3.1_1,SEN,Senegal,SEN.3_1,Fatick,NA,Fatick,,NA,Département,Department,,SN.FK.FK
+-16.4667,13.8500,SEN.3.2_1,SEN,Senegal,SEN.3_1,Fatick,NA,Foundiougne,,NA,Département,Department,,SN.FK.FD
+-16.0667,14.4833,SEN.3.3_1,SEN,Senegal,SEN.3_1,Fatick,NA,Gossas,,NA,Département,Department,,SN.FK.GS
+-15.2833,14.1000,SEN.4.1_1,SEN,Senegal,SEN.4_1,Kaffrine,NA,Birkilane,,NA,Département,Department,,SN.KA.BK
+-15.5500,14.1000,SEN.4.2_1,SEN,Senegal,SEN.4_1,Kaffrine,NA,Kaffrine,,NA,Département,Department,,SN.KA.KF
+-14.7833,13.9833,SEN.4.3_1,SEN,Senegal,SEN.4_1,Kaffrine,NA,Koungheul,,NA,Département,Department,,SN.KA.KG
+-15.1167,14.1167,SEN.4.4_1,SEN,Senegal,SEN.4_1,Kaffrine,NA,Malem Hoddar,,NA,Département,Department,,SN.KA.MH
+-15.9667,14.1000,SEN.5.1_1,SEN,Senegal,SEN.5_1,Kaolack,NA,Guinguineo,,NA,Département,Department,,SN.KL.GN
+-16.0758,14.1520,SEN.5.2_1,SEN,Senegal,SEN.5_1,Kaolack,NA,Kaolack,,NA,Département,Department,,SN.KL.KL
+-15.7667,14.2833,SEN.5.3_1,SEN,Senegal,SEN.5_1,Kaolack,NA,Nioro du Rip,,NA,Département,Department,,SN.KL.NR
+-12.1810,12.5633,SEN.6.1_1,SEN,Senegal,SEN.6_1,Kédougou,NA,Kédougou,,NA,Département,Department,,SN.KE.KE
+-12.2167,12.7667,SEN.6.2_1,SEN,Senegal,SEN.6_1,Kédougou,NA,Salémata,,NA,Département,Department,,SN.KE.SL
+-12.0833,12.3833,SEN.6.3_1,SEN,Senegal,SEN.6_1,Kédougou,NA,Saraya,,NA,Département,Department,,SN.KE.SR
+-14.9500,12.8833,SEN.7.1_1,SEN,Senegal,SEN.7_1,Kolda,NA,Kolda,,NA,Département,Department,,SN.KD.KD
+-15.1833,13.0667,SEN.7.2_1,SEN,Senegal,SEN.7_1,Kolda,NA,Médina Yoro Foulah,,NA,Département,Department,,SN.KD.MY
+-14.6000,12.9500,SEN.7.3_1,SEN,Senegal,SEN.7_1,Kolda,NA,Vélingara,,NA,Département,Department,,SN.KD.VL
+-15.6167,15.6167,SEN.8.1_1,SEN,Senegal,SEN.8_1,Louga,NA,Kébémer,,NA,Département,Department,,SN.LG.KB
+-15.8500,15.3667,SEN.8.2_1,SEN,Senegal,SEN.8_1,Louga,NA,Linguère,,NA,Département,Department,,SN.LG.LN
+-15.6167,15.6167,SEN.8.3_1,SEN,Senegal,SEN.8_1,Louga,NA,Louga,,NA,Département,Department,,SN.LG.LG
+-13.2500,15.6500,SEN.9.1_1,SEN,Senegal,SEN.9_1,Matam,NA,Kanel,,NA,Département,Department,,SN.MT.KN
+-13.6700,15.6167,SEN.9.2_1,SEN,Senegal,SEN.9_1,Matam,NA,Matam,,NA,Département,Department,,SN.MT.MT
+-13.0500,14.9667,SEN.9.3_1,SEN,Senegal,SEN.9_1,Matam,NA,Ranérou,,NA,Département,Department,,SN.MT.RN
+-16.0500,16.0333,SEN.10.1_1,SEN,Senegal,SEN.10_1,Saint-Louis,NA,Dagana,,NA,Département,Department,,SN.SL.DG
+-15.8667,15.5667,SEN.10.2_1,SEN,Senegal,SEN.10_1,Saint-Louis,NA,Podor,,NA,Département,Department,,SN.SL.PD
+-16.4600,16.0200,SEN.10.3_1,SEN,Senegal,SEN.10_1,Saint-Louis,NA,Saint-Louis,,NA,Département,Department,,SN.SL.SL
+-15.5500,12.7000,SEN.11.1_1,SEN,Senegal,SEN.11_1,Sédhiou,NA,Bounkiling,,NA,Département,Department,,SN.SE.BN
+-15.5500,12.7667,SEN.11.2_1,SEN,Senegal,SEN.11_1,Sédhiou,NA,Goudomp,,NA,Département,Department,,SN.SE.GD
+-15.5567,12.7083,SEN.11.3_1,SEN,Senegal,SEN.11_1,Sédhiou,NA,Sédhiou,,NA,Département,Department,,SN.SE.SE
+-13.6833,13.7667,SEN.12.1_1,SEN,Senegal,SEN.12_1,Tambacounda,NA,Bakel,,NA,Département,Department,,SN.TC.BK
+-13.0500,13.3500,SEN.12.2_1,SEN,Senegal,SEN.12_1,Tambacounda,NA,Goudiry,,NA,Département,Department,,SN.TC.GD
+-13.3833,13.5500,SEN.12.3_1,SEN,Senegal,SEN.12_1,Tambacounda,NA,Koumpentoum,,NA,Département,Department,,SN.TC.KP
+-13.6833,13.7833,SEN.12.4_1,SEN,Senegal,SEN.12_1,Tambacounda,NA,Tambacounda,,NA,Département,Department,,SN.TC.TC
+-16.9260,14.7910,SEN.13.1_1,SEN,Senegal,SEN.13_1,Thiès,NA,Mbour,,NA,Département,Department,,SN.TH.MR
+-16.9167,14.7833,SEN.13.2_1,SEN,Senegal,SEN.13_1,Thiès,NA,Thiès,,NA,Département,Department,,SN.TH.TH
+-16.8167,14.9500,SEN.13.3_1,SEN,Senegal,SEN.13_1,Thiès,NA,Tivaouane,,NA,Département,Department,,SN.TH.TV
+-16.2167,12.8167,SEN.14.1_1,SEN,Senegal,SEN.14_1,Ziguinchor,NA,Bignona,,NA,Département,Department,,SN.ZG.BG
+-16.5500,12.4833,SEN.14.2_1,SEN,Senegal,SEN.14_1,Ziguinchor,NA,Oussouye,,NA,Département,Department,,SN.ZG.OS
+-16.2719,12.5605,SEN.14.3_1,SEN,Senegal,SEN.14_1,Ziguinchor,NA,Ziguinchor,,NA,Département,Department,,SN.ZG.ZG

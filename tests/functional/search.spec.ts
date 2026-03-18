@@ -98,7 +98,7 @@ test.group('Search', (group) => {
     const body = response.body()
     const { data } = body
     const expected =
-      data.results.regions.length + data.results.departements.length + data.results.communes.length
+      data.results.regions.length + data.results.departements.length + data.results.communes.length + (data.results.localites ? data.results.localites.length : 0)
     // @ts-ignore
     client.assert.equal(data.total, expected)
   })
