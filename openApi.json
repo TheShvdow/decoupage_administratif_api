@@ -1,0 +1,1499 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Découpage Administratif du Sénégal",
+    "version": "1.0.0",
+    "description": "API REST pour accéder aux données du découpage administratif du Sénégal. Cette API permet de récupérer les informations sur les 14 régions, les départements et les communes du Sénégal.",
+    "contact": {
+      "name": "Support API",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "Serveur de développement"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Region": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique de la région",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom de la région",
+            "example": "Dakar"
+          },
+          "code": {
+            "type": "string",
+            "description": "Code court de la région",
+            "example": "DK"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Latitude GPS",
+            "example": 14.6928
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Longitude GPS",
+            "example": -17.4467
+          },
+          "elevation": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Altitude en mètres",
+            "example": 15
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de création"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de modification"
+          }
+        }
+      },
+      "RegionWithDepartements": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique de la région",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom de la région",
+            "example": "Dakar"
+          },
+          "code": {
+            "type": "string",
+            "description": "Code court de la région",
+            "example": "DK"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Latitude GPS",
+            "example": 14.6928
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Longitude GPS",
+            "example": -17.4467
+          },
+          "elevation": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Altitude en mètres",
+            "example": 15
+          },
+          "departements": {
+            "type": "array",
+            "description": "Liste des départements de la région",
+            "items": {
+              "$ref": "#/components/schemas/Departement"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de création"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de modification"
+          }
+        }
+      },
+      "Departement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique du département",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom du département",
+            "example": "Dakar"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Code administratif du département",
+            "example": "DK"
+          },
+          "region_id": {
+            "type": "integer",
+            "description": "Identifiant de la région parent",
+            "example": 1
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Latitude GPS",
+            "example": 14.6928
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Longitude GPS",
+            "example": -17.4467
+          },
+          "elevation": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Altitude en mètres",
+            "example": 31
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de création"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de modification"
+          }
+        }
+      },
+      "DepartementWithCommunes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique du département",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom du département",
+            "example": "Dakar"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Code administratif du département",
+            "example": "DK"
+          },
+          "region_id": {
+            "type": "integer",
+            "description": "Identifiant de la région parent",
+            "example": 1
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Latitude GPS",
+            "example": 14.6928
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Longitude GPS",
+            "example": -17.4467
+          },
+          "elevation": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Altitude en mètres",
+            "example": 31
+          },
+          "communes": {
+            "type": "array",
+            "description": "Liste des communes du département",
+            "items": {
+              "$ref": "#/components/schemas/Commune"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de création"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de modification"
+          }
+        }
+      },
+      "Commune": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique de la commune",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom de la commune",
+            "example": "Dakar Plateau"
+          },
+          "departement_id": {
+            "type": "integer",
+            "description": "Identifiant du département parent",
+            "example": 1
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Code unique de la commune (code département + numéro séquentiel)",
+            "example": "DK03"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "description": "Latitude GPS",
+            "example": 14.6928
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "description": "Longitude GPS",
+            "example": -17.4467
+          },
+          "elevation": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Altitude en mètres (peut être nulle)",
+            "example": 25
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de création"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de modification"
+          }
+        }
+      },
+      "CommuneWithHierarchy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique de la commune",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom de la commune",
+            "example": "Dakar Plateau"
+          },
+          "departement_id": {
+            "type": "integer",
+            "description": "Identifiant du département parent",
+            "example": 1
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Code unique de la commune (code département + numéro séquentiel)",
+            "example": "DK03"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double",
+            "description": "Latitude GPS",
+            "example": 14.6928
+          },
+          "lon": {
+            "type": "number",
+            "format": "double",
+            "description": "Longitude GPS",
+            "example": -17.4467
+          },
+          "elevation": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Altitude en mètres (peut être nulle)",
+            "example": 25
+          },
+          "departement": {
+            "type": "object",
+            "description": "Département parent",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Dakar"
+              },
+              "region_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "region": {
+                "$ref": "#/components/schemas/Region"
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de création"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de modification"
+          }
+        }
+      },
+      "Localite": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique de la localité",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom de la localité",
+            "example": "Keur Moussa"
+          },
+          "commune_id": {
+            "type": "integer",
+            "description": "Identifiant de la commune parent",
+            "example": 1
+          }
+        }
+      },
+      "LocaliteWithHierarchy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant unique de la localité",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Nom de la localité",
+            "example": "Keur Moussa"
+          },
+          "commune_id": {
+            "type": "integer",
+            "description": "Identifiant de la commune parent",
+            "example": 1
+          },
+          "commune": {
+            "type": "object",
+            "description": "Commune parent",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Dakar Plateau"
+              },
+              "departement_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "departement": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Dakar"
+                  },
+                  "region_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "region": {
+                    "$ref": "#/components/schemas/Region"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SearchResults": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "example": "dakar"
+          },
+          "total": {
+            "type": "integer",
+            "example": 12
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "regions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Region"
+                }
+              },
+              "departements": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Departement"
+                }
+              },
+              "communes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Commune"
+                }
+              },
+              "localites": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Localite"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Stats": {
+        "type": "object",
+        "properties": {
+          "regions": {
+            "type": "integer",
+            "example": 14
+          },
+          "departements": {
+            "type": "integer",
+            "example": 46
+          },
+          "communes": {
+            "type": "integer",
+            "example": 549
+          },
+          "localites": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Succès"
+          },
+          "data": {
+            "type": "object",
+            "description": "Données de la réponse"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Ressource non trouvée."
+          },
+          "errors": {
+            "nullable": true,
+            "example": null
+          }
+        }
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "Ressource non trouvée",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Paramètre invalide",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/communes": {
+      "get": {
+        "tags": [
+          "Communes"
+        ],
+        "summary": "Liste toutes les communes",
+        "description": "Retourne la liste de toutes les communes du Sénégal. Peut être filtré par département. Supporte la pagination optionnelle via ?page= et ?limit=",
+        "parameters": [
+          {
+            "name": "departement_id",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer par identifiant de département",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Numéro de page (active la pagination)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre de résultats par page (max 200, défaut 100)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "example": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des communes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Commune"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/communes/{id}": {
+      "get": {
+        "tags": [
+          "Communes"
+        ],
+        "summary": "Obtenir une commune avec sa hiérarchie complète",
+        "description": "Retourne une commune spécifique avec son département et sa région (hiérarchie complète pour breadcrumb)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la commune",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Commune avec hiérarchie complète",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CommuneWithHierarchy"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/communes/{id}/localites": {
+      "get": {
+        "tags": [
+          "Communes"
+        ],
+        "summary": "Liste des localités d'une commune",
+        "description": "Retourne toutes les localités d'une commune spécifique",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la commune",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des localités",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Localite"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/departements": {
+      "get": {
+        "tags": [
+          "Départements"
+        ],
+        "summary": "Liste tous les départements",
+        "description": "Retourne la liste de tous les départements (sans communes). Peut être filtré par région",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer par identifiant de région",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des départements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Departement"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/departements/{id}": {
+      "get": {
+        "tags": [
+          "Départements"
+        ],
+        "summary": "Obtenir un département avec ses communes",
+        "description": "Retourne un département spécifique avec la liste de toutes ses communes",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant du département",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Département avec ses communes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/DepartementWithCommunes"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/departements/{id}/communes": {
+      "get": {
+        "tags": [
+          "Départements"
+        ],
+        "summary": "Liste des communes d'un département",
+        "description": "Retourne toutes les communes d'un département spécifique",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant du département",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des communes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Commune"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/localites": {
+      "get": {
+        "tags": [
+          "Localites"
+        ],
+        "summary": "Liste toutes les localites",
+        "description": "Retourne la liste de toutes les localites du Sénégal. Peut être filtré par commune. Supporte la pagination optionnelle via ?page= et ?limit=",
+        "parameters": [
+          {
+            "name": "commune_id",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer par identifiant de commune",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Numéro de page (active la pagination)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre de résultats par page (max 200, défaut 100)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "example": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des localites"
+          }
+        }
+      }
+    },
+    "/api/v1/localites/{id}": {
+      "get": {
+        "tags": [
+          "Localites"
+        ],
+        "summary": "Obtenir une localite avec sa hiérarchie complète",
+        "description": "Retourne une localite spécifique avec sa commune, son département et sa région",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la localite",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Localite avec hiérarchie complète"
+          },
+          "404": {
+            "description": "Localite non trouvée"
+          }
+        }
+      }
+    },
+    "/api/v1/map/regions": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "GeoJSON FeatureCollection de toutes les régions",
+        "responses": {
+          "200": {
+            "description": "GeoJSON FeatureCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/map/departements": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "GeoJSON FeatureCollection de tous les départements",
+        "parameters": [
+          {
+            "name": "region_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrer par région"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GeoJSON FeatureCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/map/communes": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "GeoJSON FeatureCollection de toutes les communes",
+        "parameters": [
+          {
+            "name": "departement_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrer par département"
+          },
+          {
+            "name": "region_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrer par région"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GeoJSON FeatureCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/map/localites": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "GeoJSON FeatureCollection des localités (polygones Voronoï)",
+        "parameters": [
+          {
+            "name": "commune_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrer par commune"
+          },
+          {
+            "name": "departement_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrer par département"
+          },
+          {
+            "name": "region_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrer par région"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 500
+            },
+            "description": "Nombre maximum de features (défaut 500)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GeoJSON FeatureCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pays": {
+      "get": {
+        "tags": [
+          "Pays"
+        ],
+        "summary": "Statistiques nationales du Sénégal",
+        "description": "Retourne le nom, la superficie, la population et la densité du Sénégal",
+        "responses": {
+          "200": {
+            "description": "Statistiques nationales",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Pays"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/map/pays": {
+      "get": {
+        "tags": [
+          "Map",
+          "Pays"
+        ],
+        "summary": "GeoJSON Feature du polygone national du Sénégal",
+        "description": "Retourne le polygone MultiPolygon du Sénégal au format GeoJSON Feature (RFC 7946)",
+        "responses": {
+          "200": {
+            "description": "GeoJSON Feature",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoJSONFeature"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/regions": {
+      "get": {
+        "tags": [
+          "Régions"
+        ],
+        "summary": "Liste toutes les régions",
+        "description": "Retourne la liste complète des 14 régions du Sénégal (sans départements ni communes)",
+        "responses": {
+          "200": {
+            "description": "Liste des régions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Region"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/regions/{id}": {
+      "get": {
+        "tags": [
+          "Régions"
+        ],
+        "summary": "Obtenir une région avec ses départements",
+        "description": "Retourne une région spécifique avec la liste de ses départements (sans les communes)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la région",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Région avec ses départements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/RegionWithDepartements"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/regions/{regionId}/departements": {
+      "get": {
+        "tags": [
+          "Régions"
+        ],
+        "summary": "Liste des départements d'une région",
+        "description": "Retourne tous les départements d'une région spécifique (sans les communes)",
+        "parameters": [
+          {
+            "name": "regionId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la région",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des départements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Departement"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/regions/{regionId}/departements/{departementId}": {
+      "get": {
+        "tags": [
+          "Régions"
+        ],
+        "summary": "Département d'une région avec ses communes",
+        "description": "Retourne un département spécifique d'une région avec toutes ses communes",
+        "parameters": [
+          {
+            "name": "regionId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la région",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          },
+          {
+            "name": "departementId",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant du département",
+            "schema": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Région, département et ses communes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "region": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "departement": {
+                          "$ref": "#/components/schemas/DepartementWithCommunes"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "tags": [
+          "Recherche"
+        ],
+        "summary": "Rechercher par nom dans toutes les entités",
+        "description": "Recherche insensible à la casse dans les régions, départements et communes.\nLe paramètre `q` doit contenir au moins 2 caractères.\nLe paramètre optionnel `type` restreint la recherche à un seul type d'entité.\n",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Terme de recherche (minimum 2 caractères)",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "example": "dakar"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Type d'entité à rechercher : region, departement ou commune",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "region",
+                "departement",
+                "commune",
+                "localite"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Résultats de la recherche",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Succès"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SearchResults"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/v1/stats": {
+      "get": {
+        "tags": [
+          "Statistiques"
+        ],
+        "summary": "Statistiques globales du découpage administratif",
+        "description": "Retourne le nombre total de régions, départements et communes du Sénégal",
+        "responses": {
+          "200": {
+            "description": "Statistiques globales",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Statistiques globales du découpage administratif du Sénégal"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Stats"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
