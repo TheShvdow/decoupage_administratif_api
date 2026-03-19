@@ -22,7 +22,7 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async () => {
   return {
-    name: 'SenGeoMap API',
+    name: 'sendecoupage API',
     description:
       "API géospatiale du Sénégal — découpage administratif, polygones PostGIS, population ANSD 2023 et GeoJSON pour vos cartes. Documentation : /docs",
     version: '1.0.0',

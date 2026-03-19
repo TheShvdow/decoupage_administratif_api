@@ -1,4 +1,4 @@
-# SenGeoMap API 🇸🇳
+# Sen Decoupage Administratif API 🇸🇳
 
 API REST géospatiale du Sénégal construite avec **AdonisJS v5 (TypeScript)**, **PostgreSQL + PostGIS** et les données de population du **recensement ANSD 2023**.
 
@@ -96,8 +96,8 @@ Les index PostGIS (`GIST`) et trigrammes (`pg_trgm`) sont créés automatiquemen
 
 ```bash
 # Cloner le projet
-git clone https://github.com/taphacoobams/sengeomap.git
-cd sengeomap
+git clone https://github.com/TheShvdow/decoupage_administratif_api.git
+cd decoupage_administratif_api
 
 # Installer les dépendances
 pnpm install
@@ -118,8 +118,6 @@ APP_KEY=<générer avec: node ace generate:key>
 # Base de données Neon (ou PostgreSQL local avec PostGIS)
 DATABASE_URL=postgresql://user:pass@host/dbname?sslmode=require
 
-# (optionnel) Source pour le script de migration des données géo
-SOURCE_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/frontieres_db
 ```
 
 ---
@@ -316,8 +314,8 @@ pnpm run test
 ### 1. Fork & Clone
 
 ```bash
-git clone https://github.com/<ton-username>/sengeomap.git
-cd sengeomap
+git clone https://github.com/<ton-username>/decoupage_administratif_api.git
+cd decoupage_administratif_api
 pnpm install
 ```
 
@@ -344,16 +342,7 @@ pnpm run test
 
 ### 5. Signaler un bug
 
-Ouvre une [issue GitHub](https://github.com/taphacoobams/sengeomap/issues) avec le comportement observé, attendu, et les étapes pour reproduire.
-
----
-
-## 💡 Origines
-
-Ce projet fusionne deux APIs :
-
-- [**decoupage_administratif_api**](https://github.com/TheShvdow/decoupage_administratif_api) de [@TheShvdow](https://github.com/TheShvdow) — hiérarchie administrative AdonisJS
-- [**frontieres_api**](https://github.com/taphacoobams/frontieres_api) de [@taphacoobams](https://github.com/taphacoobams) — polygones PostGIS et population ANSD 2023
+Ouvre une [issue GitHub](https://github.com/TheShvdow/decoupage_administratif_api/issues) avec le comportement observé, attendu, et les étapes pour reproduire.
 
 ---
 
@@ -365,7 +354,16 @@ MIT
 
 ## 👨🏽‍💻 Auteur
 
-**taphacoobams** — [github.com/taphacoobams](https://github.com/taphacoobams)
+**TheShvdow** — [GitHub](https://github.com/TheShvdow) | [LinkedIn](https://www.linkedin.com/in/idrissa-wade) | [X (Twitter)](https://x.com/TheShvdow)
+
+
+
+### Contributeurs 
+
+Merci à tout les contributeurs qui ont aidé à construire cette API :
+
+**taphacoobams** — [GitHub](https://github.com/taphacoobams)
+
 
 ---
 

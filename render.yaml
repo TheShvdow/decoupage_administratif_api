@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: sengeomap
+    name: sendecoupage
     runtime: node
     region: frankfurt
     plan: free
@@ -16,7 +16,7 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: APP_NAME
-        value: sengeomap
+        value: sendecoupage
       - key: DRIVE_DISK
         value: local
       - key: DB_CONNECTION
